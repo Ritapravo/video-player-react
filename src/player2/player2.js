@@ -292,6 +292,7 @@ const VideoPlayer2 = () => {
                         justify="space-between"
                         alignItems="center"
                         style={{ padding: 16 }}
+                        className={classes.lowerGrid}
                     >
                         <Grid item xs={12}>
                             <Slider
@@ -305,11 +306,12 @@ const VideoPlayer2 = () => {
                                 onChange={handleSeekChange}
                                 onMouseDown={handleSeekMouseDown}
                                 onChangeCommitted={handleSeekMouseUp}
+                                className={classes.slider}
                             />
 
                         </Grid>
 
-                        <Grid item xs={8} md={9}>
+                        <Grid item xs={12} md={12}>
                             <Grid container alignItems="center" >
 
                                 <Grid item >
@@ -321,7 +323,7 @@ const VideoPlayer2 = () => {
                                         {muted ? <VolumeOffIcon fontSize='medium' /> : <VolumeUpIcon fontSize="medium" />}
                                     </IconButton>
                                 </Grid>
-                                <Grid item xs={4} md={2}>
+                                <Grid item style={{width:'15%'}}>
                                     <Slider
                                         size='small'
                                         min={0}
@@ -336,10 +338,44 @@ const VideoPlayer2 = () => {
                                 <Button variant="text" style={{ color: "#fff", marginLeft: 16 }}>
                                     <Typography onClick={handleChangeDisplayFormat}>{ellapsedTime}/{totalDuration}</Typography>
                                 </Button>
+                                <Button
+                                    onClick={handlePopover}
+                                    variant="text"
+                                    className={classes.bottomIcons}
+                                // style={{ float: "right" }}
+                                >
+                                    <Typography >{playbackRate}X</Typography>
+                                </Button>
+                                <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} >
+                                    <FullscreenIcon fontSize="medium" />
+                                </IconButton>
+
+                                <Popover
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "center",
+                                    }}
+                                    transformOrigin={{
+                                        vertical: "bottom",
+                                        horizontal: "center",
+                                    }}
+                                >
+                                    <Grid container direction="column-reverse">
+                                        {[0.5, 1, 1.5, 2].map((rate) => (
+                                            <Button variant="text" onClick={() => handlePLaybackRateChange(rate)} key={rate}>
+                                                <Typography color={rate === playbackRate ? "secondary" : "default"}>{rate}</Typography>
+                                            </Button>
+                                        ))}
+                                    </Grid>
+                                </Popover>
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={4} md={3}>
+                        {/* <Grid item xs={4} md={3}>
                             <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} style={{   transform: "translate(0,-11%)" }}>
                                 <FullscreenIcon fontSize="medium" />
                             </IconButton>
@@ -375,7 +411,7 @@ const VideoPlayer2 = () => {
                                 </Grid>
                             </Popover>
 
-                        </Grid>
+                        </Grid> */}
 
                     </Grid>
                 </div>
@@ -398,13 +434,13 @@ const VideoPlayer2 = () => {
                             >
                                 <img crossOrigin="anonymous" src={bookmark.image} width='100%' />
                             </Paper>
-                                <p style={{color:'blue'}}>
-                                    {bookmark.display}
-                                </p>
-                                <p style={{textAlign:'left'}}>
-                                    {/* <span style={{color:'blue'}}>{bookmark.display}</span>  */}
-                                    Introduction to a new topic. This is great
-                                </p>
+                            <p style={{ color: 'blue' }}>
+                                {bookmark.display}
+                            </p>
+                            <p style={{ textAlign: 'left' }}>
+                                {/* <span style={{color:'blue'}}>{bookmark.display}</span>  */}
+                                Introduction to a new topic. This is great
+                            </p>
                         </div>
                     ))}
                 </div>
