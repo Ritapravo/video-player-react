@@ -311,10 +311,8 @@ const VideoPlayer2 = () => {
 
                         </Grid>
 
-                        <Grid item xs={12} md={12}>
-                            <Grid container alignItems="center" >
-
-                                <Grid item >
+                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+                            <div style={{minWidth:'60%', display:'flex', alignItems:'center'}}>
                                     <IconButton onClick={handlePlayPause} className={classes.bottomIcons}>
                                         {playing ? <PauseIcon fontSize="medium" /> : <PlayArrowIcon fontSize="medium" />}
                                     </IconButton>
@@ -322,8 +320,7 @@ const VideoPlayer2 = () => {
                                     <IconButton onClick={handleMute} className={classes.bottomIcons}>
                                         {muted ? <VolumeOffIcon fontSize='medium' /> : <VolumeUpIcon fontSize="medium" />}
                                     </IconButton>
-                                </Grid>
-                                <Grid item style={{width:'15%'}}>
+                                
                                     <Slider
                                         size='small'
                                         min={0}
@@ -332,24 +329,32 @@ const VideoPlayer2 = () => {
                                         className={classes.volumeSlider}
                                         onChange={handleVolumeChange}
                                         onChangeCommitted={handleVolumeSeekUp}
+                                    
+                                        style={{width:'15%', }}
+                                        
                                     />
-                                </Grid>
-
+                                        
+                                    
                                 <Button variant="text" style={{ color: "#fff", marginLeft: 16 }}>
                                     <Typography onClick={handleChangeDisplayFormat}>{ellapsedTime}/{totalDuration}</Typography>
                                 </Button>
+
+                            </div>
+
+                            <div style={{ display:'flex', alignItems:'center'}}>
                                 <Button
                                     onClick={handlePopover}
                                     variant="text"
                                     className={classes.bottomIcons}
-                                // style={{ float: "right" }}
+                                    // style={{ float: "right" }}
                                 >
                                     <Typography >{playbackRate}X</Typography>
                                 </Button>
-                                <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} >
+                                <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} 
+                                    // style={{float:'right'}}
+                                >
                                     <FullscreenIcon fontSize="medium" />
                                 </IconButton>
-
                                 <Popover
                                     id={id}
                                     open={open}
@@ -372,8 +377,13 @@ const VideoPlayer2 = () => {
                                         ))}
                                     </Grid>
                                 </Popover>
-                            </Grid>
-                        </Grid>
+                            </div>
+                        </div>
+
+                        <div style={{display:'inline-block', width:'25%'}}>
+
+
+                        </div>
 
                         {/* <Grid item xs={4} md={3}>
                             <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} style={{   transform: "translate(0,-11%)" }}>

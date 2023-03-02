@@ -72,23 +72,25 @@
 
 
 .controlIcons {
-    color: #777;
+    /* color: #777; */
+    color: #b1a1a1!important;
     font-size: 50;
     transform: scale(0.9);
 
 }
 
 .controlIcons:hover {
-    color: #fff;
+    color: #fff!important;
     transform: scale(1);
 }
 
 .bottomIcons {
-    color: #999;
+    /* color: #999; */
+    color: #b1a1a1!important;
 }
 
 .bottomIcons:hover {
-    color: #fff;
+    color: #fff!important;
 }
 
 
