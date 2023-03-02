@@ -20,6 +20,7 @@ import Paper from '@mui/material/Paper';
 import { dummyCheckPoints } from './dummy';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
+import classes from './player.module.css'
 
 const format = (seconds) => {
     if (isNaN(seconds)) {
@@ -39,46 +40,7 @@ function valuetext(value) {
     return `${value}°C`;
 }
 
-const useStyles = {
-    playerWrapper: {
-        width: '100%',
-        position: 'relative',
-    },
 
-    controlWrapper: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        zIndex: 1,
-    },
-
-    controlIcons: {
-        color: '#777',
-        fontSize: 50,
-        transform: 'scale(0.9)',
-        '&:hover': {
-            color: '#fff',
-            transform: 'scale(1)',
-
-        }
-    },
-    bottomIcons: {
-        color: "#999",
-        '&:hover': {
-            color: '#fff',
-        }
-
-    },
-    volumeSlider: {
-        width: "100",
-    }
-};
 function ValueLabelComponent(props) {
     const { children, value, ellapsedTime } = props;
     // console.log(value);
@@ -92,51 +54,12 @@ ValueLabelComponent.propTypes = {
     // children: PropTypes.element.isRequired,
     value: PropTypes.string.isRequired,
 };
-// const PrettoSlider = styled(Slider)({
-//     // color: '#52af77',
-//     height: 8,
-//     '& .MuiSlider-track': {
-//         border: 'none',
-//     },
-//     '& .MuiSlider-thumb': {
-//         height: 24,
-//         width: 24,
-//         backgroundColor: '#fff',
-//         border: '2px solid currentColor',
-//         '&:focus, &:hover, &.Mui-active, &.Mui-focusVisible': {
-//             boxShadow: 'inherit',
-//         },
-//         '&:before': {
-//             display: 'none',
-//         },
-//     },
-//     '& .MuiSlider-valueLabel': {
-//         lineHeight: 1.2,
-//         fontSize: 12,
-//         background: 'unset',
-//         padding: 0,
-//         width: 32,
-//         height: 32,
-//         borderRadius: '50% 50% 50% 0',
-//         backgroundColor: '#52af77',
-//         transformOrigin: 'bottom left',
-//         transform: 'translate(50%, -100%) rotate(-45deg) scale(0)',
-//         '&:before': { display: 'none' },
-//         '&.MuiSlider-valueLabelOpen': {
-//             transform: 'translate(50%, -100%) rotate(-45deg) scale(1)',
-//         },
-//         '& > *': {
-//             transform: 'rotate(45deg)',
-//         },
-//     },
 
-
-// });
 
 let count = 0;
 
 const VideoPlayer2 = () => {
-    const classes = useStyles;
+    // const classes = useStyles;
     const [anchorEl, setAnchorEl] = useState(null);
     const [state, setState] = useState({
         playing: true,
@@ -182,7 +105,7 @@ const VideoPlayer2 = () => {
     const playerRef = useRef(null);
     const playerContainerRef = useRef(null);
     const canvasRef = useRef(null);
-    const controlsRef = useRef (null)
+    const controlsRef = useRef(null)
 
 
     const handlePlayPause = () => {
@@ -241,10 +164,10 @@ const VideoPlayer2 = () => {
         if (count > 2) {
             controlsRef.current.style.visibility = "hidden";
             count = 0;
-          }
-          if (controlsRef.current.style.visibility == "visible") {
+        }
+        if (controlsRef.current.style.visibility == "visible") {
             count += 1;
-          }
+        }
         // console.log(count);
     }
 
@@ -281,30 +204,25 @@ const VideoPlayer2 = () => {
     const totalDuration = format(duration);
 
     return (<>
-        {/* <AppBar position='fixed'>
-            <Toolbar>
-                <Typography variant='h6'>Bodhitree Video Player</Typography>
-            </Toolbar>
-        </AppBar> */}
-        <Toolbar />
+
         <div >
-        <TextField
-          id="standard-select-currency"
-          select
-          label="Select"
-        //   defaultValue="EUR"
-          helperText="Checkpoints"
-          variant="standard"
-          style={{width:'40%', }}
-          
-        >
-          {dummyCheckPoints.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.name} {option.display}
-            </MenuItem>
-          ))}
-        </TextField>
-            <div ref={playerContainerRef} style={classes.playerWrapper} onMouseMove={handleMouseMove}>
+            <TextField
+                id="standard-select-currency"
+                select
+                label="Select"
+                //   defaultValue="EUR"
+                helperText="Checkpoints"
+                variant="standard"
+                style={{ width: '40%', }}
+
+            >
+                {dummyCheckPoints.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                        {option.name} {option.display}
+                    </MenuItem>
+                ))}
+            </TextField>
+            <div ref={playerContainerRef} className={classes.playerWrapper} onMouseMove={handleMouseMove}>
                 {/* TOP CONTROLS */}
                 <ReactPlayer
                     ref={playerRef}
@@ -323,10 +241,10 @@ const VideoPlayer2 = () => {
                             }
                         }
                     }}
-                    
+
                 />
 
-                <div style={classes.controlWrapper} ref={controlsRef}>
+                <div className={classes.controlWrapper} ref={controlsRef}>
                     <Grid container direction={"row"} alignItems="center" justifyContent="space-between" style={{ padding: 16 }}>
                         <Grid item>
                             <Typography variant='h5' style={{ color: 'white' }}>Video Title</Typography>
@@ -352,16 +270,16 @@ const VideoPlayer2 = () => {
 
                     <Grid container direction={"row"} alignItems="center" justifyContent="center">
 
-                        <IconButton onClick={handleRewind} style={classes.controlIcons} aria-label="reqind">
+                        <IconButton onClick={handleRewind} className={classes.controlIcons} aria-label="reqind">
                             <FastRewindIcon fontSize="large" />
                         </IconButton>
 
-                        <IconButton onClick={handlePlayPause} style={classes.controlIcons} aria-label="reqind">
+                        <IconButton onClick={handlePlayPause} className={classes.controlIcons} aria-label="reqind">
                             {playing ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
 
                         </IconButton>
 
-                        <IconButton onClick={handleFastForward} style={classes.controlIcons} aria-label="reqind">
+                        <IconButton onClick={handleFastForward} className={classes.controlIcons} aria-label="reqind">
                             <FastForwardIcon fontSize="large" />
                         </IconButton>
 
@@ -391,25 +309,25 @@ const VideoPlayer2 = () => {
 
                         </Grid>
 
-                        <Grid item xs={9} md={9}>
+                        <Grid item xs={8} md={9}>
                             <Grid container alignItems="center" >
 
                                 <Grid item >
-                                    <IconButton onClick={handlePlayPause} style={classes.bottomIcons}>
+                                    <IconButton onClick={handlePlayPause} className={classes.bottomIcons}>
                                         {playing ? <PauseIcon fontSize="medium" /> : <PlayArrowIcon fontSize="medium" />}
                                     </IconButton>
 
-                                    <IconButton onClick={handleMute} style={classes.bottomIcons}>
+                                    <IconButton onClick={handleMute} className={classes.bottomIcons}>
                                         {muted ? <VolumeOffIcon fontSize='medium' /> : <VolumeUpIcon fontSize="medium" />}
                                     </IconButton>
                                 </Grid>
-                                <Grid item xs={2} md={2}>
+                                <Grid item xs={4} md={2}>
                                     <Slider
                                         size='small'
                                         min={0}
                                         max={100}
                                         defaultValue={100}
-                                        style={classes.volumeSlider}
+                                        className={classes.volumeSlider}
                                         onChange={handleVolumeChange}
                                         onChangeCommitted={handleVolumeSeekUp}
                                     />
@@ -421,14 +339,15 @@ const VideoPlayer2 = () => {
                             </Grid>
                         </Grid>
 
-                        <Grid item xs={3} md={3}>
-                            <IconButton onClick={toggleFullScreen}  style={{ ...classes.bottomIcons, float: "right", transform: "translate(0,-11%)" }}>
+                        <Grid item xs={4} md={3}>
+                            <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} style={{   transform: "translate(0,-11%)" }}>
                                 <FullscreenIcon fontSize="medium" />
                             </IconButton>
                             <Button
                                 onClick={handlePopover}
                                 variant="text"
-                                style={{...classes.bottomIcons, float: "right" }}
+                                className={classes.bottomIcons}
+                                // style={{ float: "right" }}
                             >
                                 <Typography color={'white'}>{playbackRate}X</Typography>
                             </Button>
@@ -461,29 +380,36 @@ const VideoPlayer2 = () => {
                     </Grid>
                 </div>
             </div>
-            <Grid container style={{ marginTop: 20 }} spacing={3}>
-                {bookmarks.map((bookmark, index) => (
-                    <Grid key={index} item>
-                        <Paper
-                            onClick={() => {
-                                playerRef.current.seekTo(bookmark.time);
-                                // controlsRef.current.style.visibility = "visible";
+            <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
+                <div className={classes.containerInner}>
+                    {bookmarks.map((bookmark, index) => (
+                        <div className={classes.tileStyle} >
+                            <Paper
 
-                                // setTimeout(() => {
-                                //     controlsRef.current.style.visibility = "hidden";
-                                // }, 1000);
-                            }}
-                            elevation={3}
-                        >
-                            <img crossOrigin="anonymous" src={bookmark.image} />
-                            <Typography variant="body2" align="center">
-                                bookmark at {bookmark.display}
-                            </Typography>
-                        </Paper>
-                    </Grid>
-                ))}
-            </Grid>
-            <canvas ref={canvasRef} />
+                                onClick={() => {
+                                    playerRef.current.seekTo(bookmark.time);
+                                    // controlsRef.current.style.visibility = "visible";
+
+                                    // setTimeout(() => {
+                                    //     controlsRef.current.style.visibility = "hidden";
+                                    // }, 1000);
+                                }}
+                                elevation={1}
+                            >
+                                <img crossOrigin="anonymous" src={bookmark.image} width='100%' />
+                            </Paper>
+                                <p style={{color:'blue'}}>
+                                    {bookmark.display}
+                                </p>
+                                <p style={{textAlign:'left'}}>
+                                    {/* <span style={{color:'blue'}}>{bookmark.display}</span>  */}
+                                    Introduction to a new topic. This is great
+                                </p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            <canvas ref={canvasRef} style={{ display: 'none' }} />
         </div>
 
     </>)

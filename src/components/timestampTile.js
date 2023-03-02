@@ -1,5 +1,6 @@
 import React from 'react';
 import './../App.css';
+import styles from './../player2/player.module.css'
 
 const tileStyle= {
     width: '5vw',
@@ -14,7 +15,7 @@ const tileStyle= {
 const TimestampTile = (props) => {
     const {title, timestamp} = props;
   return (
-    <div className={'tileStyle'}>
+    <div className={styles.tileStyle}>
         <h5>{title}</h5>
         <p>{timestamp}</p>
     </div>

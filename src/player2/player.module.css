@@ -1,0 +1,113 @@
+.container {
+    padding: 3vw 20vw;
+    min-height: 100vh;
+}
+
+.outline {
+    /* border: 1px solid black; */
+    padding: 1vw;
+    display: inline-block;
+}
+
+
+.tileStyle {
+    width: 15%;
+    /* height: 5vw; */
+    /* border: 1px solid black; */
+    display: inline-block;
+    margin: 1vw 0vw 1vw 1vw;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.tileStyle p {
+    margin: 2px;
+    white-space: initial
+}
+
+.horizontalScroll {
+    /* overflow-x: auto;
+    overflow-y: hidden; */
+    /* white-space: nowrap; */
+    overflow-x: scroll;
+    overflow-y: hidden;
+    max-height: 8vw;
+}
+
+.containerOuter {
+    overflow-x: scroll;
+    /* overflow-y: hidden ; */
+    max-width: 300px;
+    height: auto;
+}
+
+.containerInner {
+    /* min-width: 500%;  */
+    /* max-height: 15vw; */
+    white-space: nowrap;
+    /* display: inline; */
+}
+
+
+
+.playerWrapper {
+    width: 100%;
+    position: relative;
+}
+
+.controlWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+}
+
+,
+
+.controlIcons {
+    color: #777;
+    font-size: 50;
+    transform: scale(0.9);
+
+}
+
+.controlIcons:hover {
+    color: #fff;
+    transform: scale(1);
+}
+
+.bottomIcons {
+    color: #999;
+}
+
+.bottomIcons:hover {
+    color: '#fff';
+}
+
+
+.volumeSlider {
+    width: 100;
+}
+
+@media screen and (max-width: 500px) {
+    .container {
+        padding: 3vw 3vw;
+    }
+
+    .tileStyle {
+        width: 25%;
+    }
+
+    .tileStyle p {
+        font: normal normal normal 3vw Poppins;
+
+    }
+
+}

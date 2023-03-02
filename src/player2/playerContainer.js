@@ -2,33 +2,15 @@ import React from 'react';
 import ReactPlayer from 'react-player'
 import TimestampTile from '../components/timestampTile';
 import { VideoPlayer2 } from './player2';
-
-
-const timestamps = [
-    { id: '1', title: 'Point 1', timestamp: '0:30', },
-    { id: '2', title: 'Point 2', timestamp: '1:00', },
-    { id: '3', title: 'Point 3', timestamp: '1:30', },
-    { id: '4', title: 'Point 4', timestamp: '2:00', },
-    { id: '5', title: 'Point 5', timestamp: '0:30', },
-    { id: '6', title: 'Point 6', timestamp: '0:30', },
-    { id: '7', title: 'Point 7', timestamp: '0:30', },
-    { id: '8', title: 'Point 8', timestamp: '0:30', },
-    { id: '9', title: 'Point 9', timestamp: '0:30', },
-    { id: '9', title: 'Point 10', timestamp: '0:30', },
-    { id: '9', title: 'Point 11', timestamp: '0:30', },
-    { id: '9', title: 'Point 12', timestamp: '0:30', },
-    { id: '9', title: 'Point 13', timestamp: '0:30', },
-    { id: '9', title: 'Point 14', timestamp: '0:30', },
-    { id: '9', title: 'Point 15', timestamp: '0:30', },
-    { id: '9', title: 'Point 16', timestamp: '0:30', },
-]
+import styles from './player.module.css'
+import { timestamps } from './dummy';
 
 export const VideoPlayerContainer = () => {
     return (
-        <div>
+        <div className={styles.container}>
 
 
-            <div className='outline'>
+            <div className={styles.outline}>
                 <h2 style={{ textDecoration: 'underline' }}>This is Title</h2>
                 <h4>Description</h4>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -38,20 +20,20 @@ export const VideoPlayerContainer = () => {
                     proident, sunt in culpa qui officia deserunt mollit anim id est laborum
                 </p>
 
-                <hr />
+                
                 <VideoPlayer2/>
-                <hr />
+                
 
-                <div className='container-outer' style={{ minWidth: '100%', border: '1px solid black', padding: '0% 0%' }}>
+                {/* <div className={styles.containerOuter} style={{ minWidth: '100%',  padding: '0% 0%' }}>
 
-                    <div className='container-inner'>
+                    <div className={styles.containerInner}>
                         {
                             timestamps.map((item, index) => (
                                 <TimestampTile title={item.title} timestamp={item.timestamp} />
                             ))
                         }
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     )

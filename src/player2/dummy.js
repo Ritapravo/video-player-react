@@ -49,4 +49,64 @@ const dummyCheckPoints = [
     }
 ];
 
-export {dummyCheckPoints};
+const useStyles = {
+    playerWrapper: {
+        width: '100%',
+        position: 'relative',
+    },
+
+    controlWrapper: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0,0,0,0.6)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        zIndex: 1,
+    },
+
+    controlIcons: {
+        color: '#777',
+        fontSize: 50,
+        transform: 'scale(0.9)',
+        '&:hover': {
+            color: '#fff',
+            transform: 'scale(1)',
+
+        }
+    },
+    bottomIcons: {
+        color: "#999",
+        '&:hover': {
+            color: '#fff',
+        }
+
+    },
+    volumeSlider: {
+        width: "100",
+    }
+};
+
+const timestamps = [
+    { id: '1', title: 'Point 1', timestamp: '0:30', },
+    { id: '2', title: 'Point 2', timestamp: '1:00', },
+    { id: '3', title: 'Point 3', timestamp: '1:30', },
+    { id: '4', title: 'Point 4', timestamp: '2:00', },
+    { id: '5', title: 'Point 5', timestamp: '0:30', },
+    { id: '6', title: 'Point 6', timestamp: '0:30', },
+    { id: '7', title: 'Point 7', timestamp: '0:30', },
+    { id: '8', title: 'Point 8', timestamp: '0:30', },
+    { id: '9', title: 'Point 9', timestamp: '0:30', },
+    { id: '9', title: 'Point 10', timestamp: '0:30', },
+    { id: '9', title: 'Point 11', timestamp: '0:30', },
+    { id: '9', title: 'Point 12', timestamp: '0:30', },
+    { id: '9', title: 'Point 13', timestamp: '0:30', },
+    { id: '9', title: 'Point 14', timestamp: '0:30', },
+    { id: '9', title: 'Point 15', timestamp: '0:30', },
+    { id: '9', title: 'Point 16', timestamp: '0:30', },
+]
+
+export {dummyCheckPoints, timestamps};
