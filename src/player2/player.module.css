@@ -56,6 +56,10 @@
     position: relative;
 }
 
+.videoTitle h2{
+    margin: 0vw;
+}
+
 .controlWrapper {
     position: absolute;
     top: 0;
@@ -69,7 +73,9 @@
     z-index: 1;
 }
 
-
+.upperControls {
+    padding: 3%;
+}
 
 .controlIcons {
     /* color: #777; */
@@ -98,9 +104,27 @@
     width: 100;
 }
 
+.css-14pt78w-MuiSlider-rail{
+    height: '1px'!important;
+}
+
+
+
+.slide .thumb{
+    width: 10px!important;
+    height: 10px;
+}
+
 @media screen and (max-width: 500px) {
     .container {
         padding: 3vw 3vw;
+    }
+    .upperControls {
+        padding: 10px 5px;
+    }
+    .videoTitle h2{
+        font-size: 5vw ;
+        margin: 1vw;
     }
 
     .tileStyle {
@@ -108,7 +132,7 @@
     }
 
     .tileStyle p {
-        font: normal normal normal 2.5vw Poppins;
+        font-size: 2.5vw ;
 
     }
 

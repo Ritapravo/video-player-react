@@ -1,5 +1,5 @@
-import { React, useState, useRef } from 'react';
-import { AppBar, Toolbar, Typography, Container, Grid, Button, IconButton } from '@mui/material';
+import { React, useState, useRef, useEffect } from 'react';
+import { Typography, Container, Grid, Button, IconButton } from '@mui/material';
 import ReactPlayer from 'react-player';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import FastRewindIcon from '@mui/icons-material/FastRewind';
@@ -10,9 +10,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import Slider, { SliderThumb } from '@mui/material/Slider';
-// import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
-// import { makeStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 import Popover from '@mui/material/Popover';
 import screenfull from 'screenfull';
@@ -36,7 +34,7 @@ const format = (seconds) => {
     return `${mm}:${ss}`;
 };
 
-function valuetext(value) {
+const valuetext=(value)=> {
     return `${value}°C`;
 }
 
@@ -59,7 +57,7 @@ ValueLabelComponent.propTypes = {
 let count = 0;
 
 const VideoPlayer2 = () => {
-    // const classes = useStyles;
+
     const [anchorEl, setAnchorEl] = useState(null);
     const [state, setState] = useState({
         playing: true,
@@ -67,10 +65,10 @@ const VideoPlayer2 = () => {
         volume: 0.5,
         playbackRate: 1.0,
         played: 0,
-        seeking: false,
         timeDisplayFormat: 'normal',
     });
 
+    const [seeking, setSeeking] = useState(false);
     const [bookmarks, setBookmarks] = useState([]);
     const addBookmark = () => {
         console.log(bookmarks);
@@ -100,25 +98,24 @@ const VideoPlayer2 = () => {
 
     }
 
-    const { playing, muted, volume, playbackRate, played, seeking, timeDisplayFormat } = state;
+    const { playing, muted, volume, playbackRate, played, timeDisplayFormat } = state;
 
     const playerRef = useRef(null);
     const playerContainerRef = useRef(null);
     const canvasRef = useRef(null);
-    const controlsRef = useRef(null)
-
+    const controlsRef = useRef(null);
+    const sliderRef = useRef(null);
+    
 
     const handlePlayPause = () => {
         setState({ ...state, playing: !state.playing })
     }
 
     const handleRewind = () => {
-        // console.log(playerRef.current.getCurrentTime());
         playerRef.current.seekTo(playerRef.current.getCurrentTime() - 10);
     }
     const handleFastForward = () => {
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 10);
-        // console.log(playerRef.current.getCurrentTime());
     }
 
     const handlePopover = (event) => {
@@ -158,31 +155,38 @@ const VideoPlayer2 = () => {
         screenfull.toggle(playerContainerRef.current);
     }
 
+
     const handleProgress = (changeState) => {
-        if (!seeking)
-            setState({ ...state, ...changeState })
-        if (count > 2) {
+        if (!seeking){
+            setState({ ...state, ...changeState });
+            sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format(currentTime);
+            
+        }
+        
+        if (count > 20) {
             controlsRef.current.style.visibility = "hidden";
             count = 0;
         }
         if (controlsRef.current.style.visibility == "visible") {
             count += 1;
         }
-        // console.log(count);
     }
 
     const handleSeekChange = (e, newValue) => {
+        // console.log(sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText);
+   
+        sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format((newValue*playerRef?.current.getDuration())/100 );
         setState({ ...state, played: parseFloat(newValue / 100) });
 
     };
     const handleSeekMouseDown = (e, newValue) => {
-        // console.log("seekmouseDown");
-        setState({ ...state, seeking: true });
+        // console.log(sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText);
+        setSeeking(true);
     };
 
     const handleSeekMouseUp = (e, newValue) => {
-        // console.log("seekmouseUp");
-        setState({ ...state, seeking: false });
+        sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format((newValue*playerRef?.current.getDuration())/100 );
+        setSeeking(false)
         playerRef.current.seekTo(newValue / 100);
     }
 
@@ -202,6 +206,8 @@ const VideoPlayer2 = () => {
     const duration = playerRef.current ? playerRef.current.getDuration() : '00:00';
     const ellapsedTime = timeDisplayFormat === 'normal' ? format(currentTime) : `-${format(duration - currentTime)}`;
     const totalDuration = format(duration);
+    
+
 
     return (<>
 
@@ -245,9 +251,9 @@ const VideoPlayer2 = () => {
                 />
 
                 <div className={classes.controlWrapper} ref={controlsRef}>
-                    <Grid container direction={"row"} alignItems="center" justifyContent="space-between" style={{ padding: 16 }}>
-                        <Grid item>
-                            <Typography variant='h5' style={{ color: 'white' }}>Video Title</Typography>
+                    <Grid container direction={"row"} alignItems="center" justifyContent="space-between" className={classes.upperControls}>
+                        <Grid item className={classes.videoTitle}>
+                            <h2 style={{ color: 'white' }}>Video Title</h2>
                         </Grid>
 
                         <Grid item>
@@ -258,6 +264,7 @@ const VideoPlayer2 = () => {
                                 startIcon={<BookmarkIcon />}
                                 style={{ float: "right" }}
                                 onClick={addBookmark}
+
                             >
 
                                 Bookmark
@@ -296,17 +303,20 @@ const VideoPlayer2 = () => {
                     >
                         <Grid item xs={12}>
                             <Slider
-                                // size='small'
+                                size={`${window.screen.width > 500 ? 'medium' : 'small'}`}
                                 min={0}
                                 max={100}
                                 value={played * 100}
-                                getAriaValueText={valuetext}
                                 valueLabelDisplay="auto"
-                                aria-label="custom thumb label"
+                                // step={1}
+                                getAriaValueText={()=>valuetext(played*100)}
+                                // aria-label="custom thumb label"
                                 onChange={handleSeekChange}
                                 onMouseDown={handleSeekMouseDown}
                                 onChangeCommitted={handleSeekMouseUp}
                                 className={classes.slider}
+                                ref={sliderRef}
+                                
                             />
 
                         </Grid>
@@ -330,10 +340,11 @@ const VideoPlayer2 = () => {
                                         onChange={handleVolumeChange}
                                         onChangeCommitted={handleVolumeSeekUp}
                                     
-                                        style={{width:'15%', }}
+                                        style={{width:'15%', padding:'8 0'}}
                                         
                                     />
-                                        
+                                 {/* current -> children[2] -> childNodes[1] -> innerText */}
+                                 {/* current -> childNodes[2] -> childNodes[1] -> childNodes[0] -> innerText */}
                                     
                                 <Button variant="text" style={{ color: "#fff", marginLeft: 16 }}>
                                     <Typography onClick={handleChangeDisplayFormat}>{ellapsedTime}/{totalDuration}</Typography>
@@ -385,43 +396,7 @@ const VideoPlayer2 = () => {
 
                         </div>
 
-                        {/* <Grid item xs={4} md={3}>
-                            <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} style={{   transform: "translate(0,-11%)" }}>
-                                <FullscreenIcon fontSize="medium" />
-                            </IconButton>
-                            <Button
-                                onClick={handlePopover}
-                                variant="text"
-                                className={classes.bottomIcons}
-                                // style={{ float: "right" }}
-                            >
-                                <Typography color={'white'}>{playbackRate}X</Typography>
-                            </Button>
-
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: "top",
-                                    horizontal: "center",
-                                }}
-                                transformOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "center",
-                                }}
-                            >
-                                <Grid container direction="column-reverse">
-                                    {[0.5, 1, 1.5, 2].map((rate) => (
-                                        <Button variant="text" onClick={() => handlePLaybackRateChange(rate)} key={rate}>
-                                            <Typography color={rate === playbackRate ? "secondary" : "default"}>{rate}</Typography>
-                                        </Button>
-                                    ))}
-                                </Grid>
-                            </Popover>
-
-                        </Grid> */}
+                       
 
                     </Grid>
                 </div>
@@ -429,7 +404,7 @@ const VideoPlayer2 = () => {
             <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
                 <div className={classes.containerInner}>
                     {bookmarks.map((bookmark, index) => (
-                        <div className={classes.tileStyle} >
+                        <div className={classes.tileStyle} key={index}>
                             <Paper
 
                                 onClick={() => {
