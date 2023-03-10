@@ -38,4 +38,54 @@
   }
 }
 
+/* .container {
+  padding: 3vw 20vw;
+  min-height: 100vh;
+} */
+
+.outline {
+  /* border: 1px solid black; */
+  padding: 1vw;
+  display: inline-block;
+}
+
+
+.tileStyle {
+  width: 15%;
+  /* height: 5vw; */
+  /* border: 1px solid black; */
+  display: inline-block;
+  margin: 1vw 0vw 1vw 1vw;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.tileStyle p {
+  margin: 2px;
+  white-space: initial
+}
+
+.horizontalScroll {
+  /* overflow-x: auto;
+  overflow-y: hidden; */
+  /* white-space: nowrap; */
+  overflow-x: scroll;
+  overflow-y: hidden;
+  max-height: 8vw;
+}
+
+.containerOuter {
+  overflow-x: scroll;
+  /* overflow-y: hidden ; */
+  max-width: 300px;
+  height: auto;
+}
+
+.containerInner {
+  /* min-width: 500%;  */
+  /* max-height: 15vw; */
+  white-space: nowrap;
+  /* display: inline; */
+}
 

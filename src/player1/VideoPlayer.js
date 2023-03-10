@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactPlayer from 'react-player'
 import TimestampTile from '../components/timestampTile';
+import '../App.css'
 
 
 
@@ -25,7 +26,7 @@ const timestamps = [
 
 export const VideoPlayer = () => {
     return (
-        <div>
+        <div style={{padding: '3vw 20vw',minHeight: '100vh'}}>
 
 
             <div className='outline'>
@@ -53,9 +54,9 @@ export const VideoPlayer = () => {
                 />
                 <hr />
 
-                <div className='container-outer' style={{ minWidth: '100%', border: '1px solid black', padding: '0% 0%' }}>
+                <div className='containerOuter' style={{ minWidth: '100%', border: '1px solid black', padding: '0% 0%' }}>
 
-                    <div className='container-inner'>
+                    <div className='containerInner'>
                         {
                             timestamps.map((item, index) => (
                                 <TimestampTile title={item.title} timestamp={item.timestamp} />

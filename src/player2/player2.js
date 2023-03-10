@@ -34,7 +34,7 @@ const format = (seconds) => {
     return `${mm}:${ss}`;
 };
 
-const valuetext=(value)=> {
+const valuetext = (value) => {
     return `${value}°C`;
 }
 
@@ -71,7 +71,14 @@ const VideoPlayer2 = () => {
     const [seeking, setSeeking] = useState(false);
     const [bookmarks, setBookmarks] = useState([]);
     const addBookmark = () => {
-        console.log(bookmarks);
+
+        let current_time = format(playerRef.current.getCurrentTime());
+        if(bookmarks.map((i)=>(i.display)).includes(current_time)){
+            alert("already bookmarked at this timestamp");
+            return;
+        }
+        // console.log(bookmarks.map((i)=>(i.display)));
+
         const canvas = canvasRef.current;
         canvas.width = 160;
         canvas.height = 90;
@@ -91,7 +98,18 @@ const VideoPlayer2 = () => {
             time: playerRef.current.getCurrentTime(),
             display: format(playerRef.current.getCurrentTime()),
             image: imageUrl,
+            value: (playerRef.current.getCurrentTime() * 100) / playerRef.current.getDuration()
         });
+        bookmarksCopy.sort((a, b) => {
+            if (a['time'] < b['time']) {
+              return  -1;
+            }
+            if (a['time'] > b['time']) {
+              return 1;
+            }
+            return 0;
+          });
+
         setBookmarks(bookmarksCopy);
 
 
@@ -105,7 +123,7 @@ const VideoPlayer2 = () => {
     const canvasRef = useRef(null);
     const controlsRef = useRef(null);
     const sliderRef = useRef(null);
-    
+
 
     const handlePlayPause = () => {
         setState({ ...state, playing: !state.playing })
@@ -157,12 +175,12 @@ const VideoPlayer2 = () => {
 
 
     const handleProgress = (changeState) => {
-        if (!seeking){
+        if (!seeking) {
             setState({ ...state, ...changeState });
-            sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format(currentTime);
-            
+            sliderRef.current.childNodes[sliderRef.current.childNodes.length - 1].childNodes[1].childNodes[0].innerText = format(currentTime);
+
         }
-        
+
         if (count > 20) {
             controlsRef.current.style.visibility = "hidden";
             count = 0;
@@ -173,20 +191,23 @@ const VideoPlayer2 = () => {
     }
 
     const handleSeekChange = (e, newValue) => {
+
         // console.log(sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText);
-   
-        sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format((newValue*playerRef?.current.getDuration())/100 );
+        if (!seeking)
+            setSeeking(true);
+        sliderRef.current.childNodes[sliderRef.current.childNodes.length - 1].childNodes[1].childNodes[0].innerText = format((newValue * playerRef?.current.getDuration()) / 100);
         setState({ ...state, played: parseFloat(newValue / 100) });
 
     };
     const handleSeekMouseDown = (e, newValue) => {
-        // console.log(sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText);
         setSeeking(true);
+        console.log("mouse Down", seeking);
     };
 
     const handleSeekMouseUp = (e, newValue) => {
-        sliderRef.current.childNodes[2].childNodes[1].childNodes[0].innerText=format((newValue*playerRef?.current.getDuration())/100 );
-        setSeeking(false)
+        sliderRef.current.childNodes[sliderRef.current.childNodes.length - 1].childNodes[1].childNodes[0].innerText = format((newValue * playerRef?.current.getDuration()) / 100);
+        setSeeking(false);
+        console.log("mouse Up", playerRef);
         playerRef.current.seekTo(newValue / 100);
     }
 
@@ -206,7 +227,7 @@ const VideoPlayer2 = () => {
     const duration = playerRef.current ? playerRef.current.getDuration() : '00:00';
     const ellapsedTime = timeDisplayFormat === 'normal' ? format(currentTime) : `-${format(duration - currentTime)}`;
     const totalDuration = format(duration);
-    
+
 
 
     return (<>
@@ -220,11 +241,14 @@ const VideoPlayer2 = () => {
                 helperText="Checkpoints"
                 variant="standard"
                 style={{ width: '40%', }}
+                value=""
 
             >
-                {dummyCheckPoints.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                        {option.name} {option.display}
+                {bookmarks.map((option) => (
+                    <MenuItem key={option.time} value={option.value} 
+                        onClick={() => {playerRef.current.seekTo(option.time);}}
+                    >
+                        {option.display}
                     </MenuItem>
                 ))}
             </TextField>
@@ -308,61 +332,61 @@ const VideoPlayer2 = () => {
                                 max={100}
                                 value={played * 100}
                                 valueLabelDisplay="auto"
-                                // step={1}
-                                getAriaValueText={()=>valuetext(played*100)}
+                                step={1}
+                                getAriaValueText={() => valuetext(played * 100)}
                                 // aria-label="custom thumb label"
                                 onChange={handleSeekChange}
                                 onMouseDown={handleSeekMouseDown}
                                 onChangeCommitted={handleSeekMouseUp}
                                 className={classes.slider}
                                 ref={sliderRef}
-                                
+                                marks={bookmarks}
                             />
 
                         </Grid>
 
-                        <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-                            <div style={{minWidth:'60%', display:'flex', alignItems:'center'}}>
-                                    <IconButton onClick={handlePlayPause} className={classes.bottomIcons}>
-                                        {playing ? <PauseIcon fontSize="medium" /> : <PlayArrowIcon fontSize="medium" />}
-                                    </IconButton>
+                        <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <div style={{ minWidth: '60%', display: 'flex', alignItems: 'center' }}>
+                                <IconButton onClick={handlePlayPause} className={classes.bottomIcons}>
+                                    {playing ? <PauseIcon fontSize="medium" /> : <PlayArrowIcon fontSize="medium" />}
+                                </IconButton>
 
-                                    <IconButton onClick={handleMute} className={classes.bottomIcons}>
-                                        {muted ? <VolumeOffIcon fontSize='medium' /> : <VolumeUpIcon fontSize="medium" />}
-                                    </IconButton>
-                                
-                                    <Slider
-                                        size='small'
-                                        min={0}
-                                        max={100}
-                                        defaultValue={100}
-                                        className={classes.volumeSlider}
-                                        onChange={handleVolumeChange}
-                                        onChangeCommitted={handleVolumeSeekUp}
-                                    
-                                        style={{width:'15%', padding:'8 0'}}
-                                        
-                                    />
-                                 {/* current -> children[2] -> childNodes[1] -> innerText */}
-                                 {/* current -> childNodes[2] -> childNodes[1] -> childNodes[0] -> innerText */}
-                                    
+                                <IconButton onClick={handleMute} className={classes.bottomIcons}>
+                                    {muted ? <VolumeOffIcon fontSize='medium' /> : <VolumeUpIcon fontSize="medium" />}
+                                </IconButton>
+
+                                <Slider
+                                    size='small'
+                                    min={0}
+                                    max={100}
+                                    defaultValue={100}
+                                    className={classes.volumeSlider}
+                                    onChange={handleVolumeChange}
+                                    onChangeCommitted={handleVolumeSeekUp}
+
+                                    style={{ width: '15%', padding: '8 0' }}
+
+                                />
+                                {/* current -> children[2] -> childNodes[1] -> innerText */}
+                                {/* current -> childNodes[2] -> childNodes[1] -> childNodes[0] -> innerText */}
+
                                 <Button variant="text" style={{ color: "#fff", marginLeft: 16 }}>
                                     <Typography onClick={handleChangeDisplayFormat}>{ellapsedTime}/{totalDuration}</Typography>
                                 </Button>
 
                             </div>
 
-                            <div style={{ display:'flex', alignItems:'center'}}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Button
                                     onClick={handlePopover}
                                     variant="text"
                                     className={classes.bottomIcons}
-                                    // style={{ float: "right" }}
+                                // style={{ float: "right" }}
                                 >
                                     <Typography >{playbackRate}X</Typography>
                                 </Button>
-                                <IconButton onClick={toggleFullScreen} className={classes.bottomIcons} 
-                                    // style={{float:'right'}}
+                                <IconButton onClick={toggleFullScreen} className={classes.bottomIcons}
+                                // style={{float:'right'}}
                                 >
                                     <FullscreenIcon fontSize="medium" />
                                 </IconButton>
@@ -391,12 +415,12 @@ const VideoPlayer2 = () => {
                             </div>
                         </div>
 
-                        <div style={{display:'inline-block', width:'25%'}}>
+                        <div style={{ display: 'inline-block', width: '25%' }}>
 
 
                         </div>
 
-                       
+
 
                     </Grid>
                 </div>
@@ -409,11 +433,6 @@ const VideoPlayer2 = () => {
 
                                 onClick={() => {
                                     playerRef.current.seekTo(bookmark.time);
-                                    // controlsRef.current.style.visibility = "visible";
-
-                                    // setTimeout(() => {
-                                    //     controlsRef.current.style.visibility = "hidden";
-                                    // }, 1000);
                                 }}
                                 elevation={1}
                             >

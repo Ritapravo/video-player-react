@@ -1,5 +1,5 @@
 .container {
-    padding: 3vw 20vw;
+    padding: 1vw 25vw;
     min-height: 100vh;
 }
 
@@ -23,7 +23,7 @@
 
 .tileStyle p {
     margin: 2px;
-    white-space: initial
+    white-space: initial;
 }
 
 .horizontalScroll {
@@ -36,7 +36,7 @@
 }
 
 .containerOuter {
-    overflow-x: scroll;
+    overflow-x: scroll!important;
     /* overflow-y: hidden ; */
     max-width: 300px;
     height: auto;
@@ -107,20 +107,25 @@
 .css-14pt78w-MuiSlider-rail{
     height: '1px'!important;
 }
-
-
+/* 
+.slider{
+    height: 2px!important;
+}
+.slider .rail{
+    height: 2px !important;
+}
 
 .slide .thumb{
     width: 10px!important;
     height: 10px;
-}
+} */
 
 @media screen and (max-width: 500px) {
     .container {
         padding: 3vw 3vw;
     }
     .upperControls {
-        padding: 10px 5px;
+        padding: 5px;
     }
     .videoTitle h2{
         font-size: 5vw ;
