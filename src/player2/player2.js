@@ -70,15 +70,23 @@ const VideoPlayer2 = () => {
 
     const [seeking, setSeeking] = useState(false);
     const [bookmarks, setBookmarks] = useState([]);
-    const addBookmark = () => {
+    const [showBookmarks, setShowBookmarks] = useState(true);
+    const [showAddMaker, setShowAddMaker] = useState(false);
+    const [markerEntry, setMarkerEntry] = useState({ type: "Section Marker", title: "" });
 
+    const handleChangeMarkerEntry = (e) => {
+        setMarkerEntry({ ...markerEntry, [e.target.name]: e.target.value });
+    }
+
+    const addBookmark = (title="", type="Section Marker") => {
+        setState({ ...state, playing: false })
         let current_time = format(playerRef.current.getCurrentTime());
-        if(bookmarks.map((i)=>(i.display)).includes(current_time)){
+        if (bookmarks.map((i) => (i.display)).includes(current_time)) {
             alert("already bookmarked at this timestamp");
             return;
         }
         // console.log(bookmarks.map((i)=>(i.display)));
-
+        console.log(playerRef);
         const canvas = canvasRef.current;
         canvas.width = 160;
         canvas.height = 90;
@@ -98,18 +106,21 @@ const VideoPlayer2 = () => {
             time: playerRef.current.getCurrentTime(),
             display: format(playerRef.current.getCurrentTime()),
             image: imageUrl,
-            value: (playerRef.current.getCurrentTime() * 100) / playerRef.current.getDuration()
+            value: (playerRef.current.getCurrentTime() * 100) / playerRef.current.getDuration(),
+            title: title, 
+            type: type,
         });
         bookmarksCopy.sort((a, b) => {
             if (a['time'] < b['time']) {
-              return  -1;
+                return -1;
             }
             if (a['time'] > b['time']) {
-              return 1;
+                return 1;
             }
             return 0;
-          });
+        });
 
+        playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
         setBookmarks(bookmarksCopy);
 
 
@@ -123,6 +134,7 @@ const VideoPlayer2 = () => {
     const canvasRef = useRef(null);
     const controlsRef = useRef(null);
     const sliderRef = useRef(null);
+    const quizContainerRef = useRef(null);
 
 
     const handlePlayPause = () => {
@@ -133,6 +145,14 @@ const VideoPlayer2 = () => {
         playerRef.current.seekTo(playerRef.current.getCurrentTime() - 10);
     }
     const handleFastForward = () => {
+        for (let i in bookmarks) {
+            console.log(bookmarks[i].time, playerRef.current.getCurrentTime());
+            if (bookmarks[i].time > playerRef.current.getCurrentTime() && bookmarks[i].time < playerRef.current.getCurrentTime() + 10) {
+                playerRef.current.seekTo(bookmarks[i].time - 1);
+                // console.log(bookmarks[i].time, playerRef.current.getCurrentTime());
+                return;
+            }
+        }
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 10);
     }
 
@@ -178,16 +198,27 @@ const VideoPlayer2 = () => {
         if (!seeking) {
             setState({ ...state, ...changeState });
             sliderRef.current.childNodes[sliderRef.current.childNodes.length - 1].childNodes[1].childNodes[0].innerText = format(currentTime);
-
         }
 
-        if (count > 20) {
+        if (count > 2) {
             controlsRef.current.style.visibility = "hidden";
             count = 0;
         }
         if (controlsRef.current.style.visibility == "visible") {
             count += 1;
         }
+        // if (bookmarks.map(item => item.display).includes(format(playerRef.current.getCurrentTime()))) {
+        //     quizContainerRef.current.style.visibility = "visible";
+        //     setState({ ...state, playing: false });
+        // }
+        for (let i in bookmarks) {
+            if (bookmarks[i].type==="Quiz Marker" && bookmarks[i].display === format(playerRef.current.getCurrentTime())) {
+                quizContainerRef.current.style.visibility = "visible";
+                setState({ ...state, playing: false });
+                playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
+            }
+        }
+
     }
 
     const handleSeekChange = (e, newValue) => {
@@ -201,13 +232,13 @@ const VideoPlayer2 = () => {
     };
     const handleSeekMouseDown = (e, newValue) => {
         setSeeking(true);
-        console.log("mouse Down", seeking);
+        // console.log("mouse Down", seeking);
     };
 
     const handleSeekMouseUp = (e, newValue) => {
         sliderRef.current.childNodes[sliderRef.current.childNodes.length - 1].childNodes[1].childNodes[0].innerText = format((newValue * playerRef?.current.getDuration()) / 100);
         setSeeking(false);
-        console.log("mouse Up", playerRef);
+        // console.log("mouse Up", playerRef);
         playerRef.current.seekTo(newValue / 100);
     }
 
@@ -219,6 +250,23 @@ const VideoPlayer2 = () => {
         controlsRef.current.style.visibility = 'visible';
         count = 0;
     }
+
+    const handleAddSectionMarker = () => {
+        
+        if(markerEntry.type==="Section Marker"){
+            addBookmark(markerEntry.title, markerEntry.type);
+            setMarkerEntry({ type: "Section Marker", title: "" });
+            setShowAddMaker(false);
+            console.log(markerEntry);
+        }
+        else{
+            addBookmark(markerEntry.title, markerEntry.type);
+            setMarkerEntry({ type: "Quiz Marker", title: "" });
+            setShowAddMaker(false);
+            console.log(markerEntry);
+        }
+    }
+    
 
     const open = Boolean(anchorEl);
     const id = open ? "playbackrate-popover" : undefined;
@@ -245,10 +293,10 @@ const VideoPlayer2 = () => {
 
             >
                 {bookmarks.map((option) => (
-                    <MenuItem key={option.time} value={option.value} 
-                        onClick={() => {playerRef.current.seekTo(option.time);}}
+                    <MenuItem key={option.time} value={option.value}
+                        onClick={() => { playerRef.current.seekTo(option.time); }}
                     >
-                        {option.display}
+                        {option.title} {option.display}
                     </MenuItem>
                 ))}
             </TextField>
@@ -287,7 +335,7 @@ const VideoPlayer2 = () => {
                                 color="primary"
                                 startIcon={<BookmarkIcon />}
                                 style={{ float: "right" }}
-                                onClick={addBookmark}
+                                onClick={handleAddSectionMarker}
 
                             >
 
@@ -403,6 +451,7 @@ const VideoPlayer2 = () => {
                                         vertical: "bottom",
                                         horizontal: "center",
                                     }}
+                                    style={{ zIndex: '4' }}
                                 >
                                     <Grid container direction="column-reverse">
                                         {[0.5, 1, 1.5, 2].map((rate) => (
@@ -415,17 +464,78 @@ const VideoPlayer2 = () => {
                             </div>
                         </div>
 
-                        <div style={{ display: 'inline-block', width: '25%' }}>
-
-
-                        </div>
+                        <div style={{ display: 'inline-block', width: '25%' }}></div>
 
 
 
                     </Grid>
                 </div>
+                <div className={classes.quizWrapper} ref={quizContainerRef}>
+                    <div className={classes.quiz}>
+
+                    </div>
+                    <Button variant={'text'} className={classes.skipButton} onClick={() => { setState({ ...state, playing: true }); quizContainerRef.current.style.visibility = "hidden" }}>skip</Button>
+
+                </div>
             </div>
-            <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
+
+            {/* <div className={classes.addMarker}>
+
+            </div> */}
+            <div className={classes.markerContainer}>
+                <div className={classes.addBookmark}>
+                    <Button variant="text" onClick={() => { setState({ ...state, playing: false }); setShowAddMaker(!showAddMaker) }}>Add Marker/Quiz</Button>
+                    <Button variant="text" onClick={() => { setShowBookmarks(!showBookmarks) }}>{showBookmarks ? "Hide Bookmarks" : "Show Bookmarks"}</Button>
+                </div>
+
+                {showAddMaker &&
+                    <div className={classes.addMarker}>
+                        <div className={classes.markerSelect}>
+                            <TextField
+                                select
+                                InputProps={{ disableUnderline: true }}
+                                className={classes.textField}
+                                placeholder={'Select Doctor'}
+                                variant="standard"
+                                value={markerEntry.type}
+                                name={"type"}
+                                onChange={handleChangeMarkerEntry}
+                                style={{padding:"0 1vw"}}
+                            >
+                                {["Section Marker", "Quiz Marker"].map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+
+                        </div>
+                        <div className={classes.markerTitle}>
+                        <TextField
+                            InputProps={{ disableUnderline: true }}
+                            className={classes.textField}
+                            placeholder={'Enter Title'}
+                            variant="standard"
+                            style={{width:"100%"}}
+                            value={markerEntry.title}
+                            name={"title"}
+                            onChange={handleChangeMarkerEntry}
+                        />
+                        </div>
+                        <div className={classes.addCancel}>
+                            <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleAddSectionMarker}>Add</Button>
+                            <Button size="small" color="error" variant="text" className={classes.addCancel}
+                                onClick={()=>{setMarkerEntry({ type: "Section Marker", title: "" });setShowAddMaker(false);}}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+
+            {bookmarks.length !== 0 && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
                 <div className={classes.containerInner}>
                     {bookmarks.map((bookmark, index) => (
                         <div className={classes.tileStyle} key={index}>
@@ -439,16 +549,16 @@ const VideoPlayer2 = () => {
                                 <img crossOrigin="anonymous" src={bookmark.image} width='100%' />
                             </Paper>
                             <p style={{ color: 'blue' }}>
-                                {bookmark.display}
+                                {bookmark.type==="Section Marker"?"section":"quiz"} : {bookmark.display} 
                             </p>
                             <p style={{ textAlign: 'left' }}>
                                 {/* <span style={{color:'blue'}}>{bookmark.display}</span>  */}
-                                Introduction to a new topic. This is great
+                                {bookmark.title.slice(0,25)} {bookmark.title.length>20?"...":""}
                             </p>
                         </div>
                     ))}
                 </div>
-            </div>
+            </div>}
             <canvas ref={canvasRef} style={{ display: 'none' }} />
         </div>
 

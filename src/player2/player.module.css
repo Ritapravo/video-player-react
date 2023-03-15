@@ -19,6 +19,7 @@
     cursor: pointer;
     text-align: center;
     border-radius: 10px;
+    vertical-align:top;
 }
 
 .tileStyle p {
@@ -36,7 +37,7 @@
 }
 
 .containerOuter {
-    overflow-x: scroll!important;
+    overflow-x: scroll !important;
     /* overflow-y: hidden ; */
     max-width: 300px;
     height: auto;
@@ -45,8 +46,9 @@
 .containerInner {
     /* min-width: 500%;  */
     /* max-height: 15vw; */
+    
+    /* display: flex; */
     white-space: nowrap;
-    /* display: inline; */
 }
 
 
@@ -56,7 +58,7 @@
     position: relative;
 }
 
-.videoTitle h2{
+.videoTitle h2 {
     margin: 0vw;
 }
 
@@ -73,30 +75,108 @@
     z-index: 1;
 }
 
+.quizWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background: rgba(0, 0, 0, 0.6); */
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+    visibility: hidden;
+    margin: 1%;
+}
+
+.markerContainer{
+    /* display: flex;
+    flex-direction: Column;
+    justify-content: space-between; */
+    background-color: rgb(240, 240, 240);
+    padding: 5px;
+}
+
+.addBookmark {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* background-color: rgb(240, 240, 240); */
+    /* padding: 5px 0; */
+    margin: 2px 0 0 0;
+}
+
+.addMarker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* background-color: rgb(240, 240, 240); */
+    padding: 5px 0;
+    margin: 2px 0 0 0;
+    /* width: 100%; */
+}
+
+.markerSelect {
+    width: 20%;
+    /* margin-left: 1vw; */
+    display:inline-block ;
+}
+.markerTitle {
+    width: 50%;
+    margin-left: 1vw!important;
+    display:inline-block ;
+    margin: 0 10px;
+}
+.addCancel{
+    display: inline-block;
+}
+
+.textField {
+    width: 80%;
+    height: 35px;
+    /* position: relative; */
+    /* margin-left: 1vw; */
+    background: rgb(225, 222, 222) 0% 0% no-repeat padding-box;
+    border-radius: 6px;
+    border: #000000;
+    /* padding: 0px 1vw !important; */
+    /* padding: 0 5px!important; */
+    margin-right: 0vw;
+}
+
+.textField input {
+    /* transform: translate(0%, 15%); */
+    /* color: #707070; */
+    margin: 0 1vw!important;
+
+}
+
 .upperControls {
     padding: 3%;
 }
 
 .controlIcons {
     /* color: #777; */
-    color: #b1a1a1!important;
+    color: #b1a1a1 !important;
     font-size: 50;
     transform: scale(0.9);
 
 }
 
 .controlIcons:hover {
-    color: #fff!important;
+    color: #fff !important;
     transform: scale(1);
 }
 
 .bottomIcons {
     /* color: #999; */
-    color: #b1a1a1!important;
+    color: #b1a1a1 !important;
 }
 
 .bottomIcons:hover {
-    color: #fff!important;
+    color: #fff !important;
 }
 
 
@@ -104,9 +184,10 @@
     width: 100;
 }
 
-.css-14pt78w-MuiSlider-rail{
-    height: '1px'!important;
+.css-14pt78w-MuiSlider-rail {
+    height: '1px' !important;
 }
+
 /* 
 .slider{
     height: 2px!important;
@@ -124,11 +205,13 @@
     .container {
         padding: 3vw 3vw;
     }
+
     .upperControls {
         padding: 5px;
     }
-    .videoTitle h2{
-        font-size: 5vw ;
+
+    .videoTitle h2 {
+        font-size: 5vw;
         margin: 1vw;
     }
 
@@ -137,7 +220,7 @@
     }
 
     .tileStyle p {
-        font-size: 2.5vw ;
+        font-size: 2.5vw;
 
     }
 
@@ -145,23 +228,25 @@
 
     } */
 
-    .slider{
-        padding: 0!important;
+    .slider {
+        padding: 0 !important;
     }
 
     .bottomIcons {
         /* padding: 0!important; */
-        color: #b1a1a1!important;
+        color: #b1a1a1 !important;
     }
-    .controlIcons{
-        color: #b1a1a1!important;
+
+    .controlIcons {
+        color: #b1a1a1 !important;
     }
+
     .controlWrapper button {
         padding: 0;
     }
 
-    .lowerGrid{
-        padding: 5px!important;
+    .lowerGrid {
+        padding: 5px !important;
     }
 
 }
