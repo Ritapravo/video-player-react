@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactPlayer from 'react-player'
 import TimestampTile from '../components/timestampTile';
-import { VideoPlayer2 } from './player2';
+import { InstructorVideoPlayer } from './instructorPlayer';
+import { StudentVideoPlayer } from './studentPlayer';
 import styles from './player.module.css'
 import { timestamps } from './dummy';
 
-export const VideoPlayerContainer = () => {
+export const VideoPlayerContainer = ({role}) => {
     return (
         <div className={styles.container}>
 
@@ -21,7 +22,8 @@ export const VideoPlayerContainer = () => {
                 </p>
 
                 
-                <VideoPlayer2/>
+                {role==="instructor" && <InstructorVideoPlayer />}
+                {role==="student" && <StudentVideoPlayer/>}
                 
 
                 {/* <div className={styles.containerOuter} style={{ minWidth: '100%',  padding: '0% 0%' }}>

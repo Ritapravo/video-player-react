@@ -15,10 +15,11 @@ import PropTypes from 'prop-types';
 import Popover from '@mui/material/Popover';
 import screenfull from 'screenfull';
 import Paper from '@mui/material/Paper';
-import { dummyCheckPoints } from './dummy';
+import { dummyCheckPoints, getLocalStorage } from './dummy';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import classes from './player.module.css'
+import { useLocalStorage, setLocalStorage } from './dummy';
 
 const format = (seconds) => {
     if (isNaN(seconds)) {
@@ -56,7 +57,7 @@ ValueLabelComponent.propTypes = {
 
 let count = 0;
 
-const VideoPlayer2 = () => {
+const InstructorVideoPlayer = () => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [state, setState] = useState({
@@ -73,12 +74,14 @@ const VideoPlayer2 = () => {
     const [showBookmarks, setShowBookmarks] = useState(true);
     const [showAddMaker, setShowAddMaker] = useState(false);
     const [markerEntry, setMarkerEntry] = useState({ type: "Section Marker", title: "" });
+    const [showEditMarker, setShowEditMarker] = useState(false);
+    const [editMarkerFields, setEditMarkerFields] = useState({ title: "" });
 
     const handleChangeMarkerEntry = (e) => {
         setMarkerEntry({ ...markerEntry, [e.target.name]: e.target.value });
     }
 
-    const addBookmark = (title="", type="Section Marker") => {
+    const addBookmark = (title = "", type = "Section Marker") => {
         setState({ ...state, playing: false })
         let current_time = format(playerRef.current.getCurrentTime());
         if (bookmarks.map((i) => (i.display)).includes(current_time)) {
@@ -107,7 +110,7 @@ const VideoPlayer2 = () => {
             display: format(playerRef.current.getCurrentTime()),
             image: imageUrl,
             value: (playerRef.current.getCurrentTime() * 100) / playerRef.current.getDuration(),
-            title: title, 
+            title: title,
             type: type,
         });
         bookmarksCopy.sort((a, b) => {
@@ -121,9 +124,8 @@ const VideoPlayer2 = () => {
         });
 
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
+        setLocalStorage("bookmarks", bookmarksCopy);
         setBookmarks(bookmarksCopy);
-
-
 
     }
 
@@ -207,17 +209,14 @@ const VideoPlayer2 = () => {
         if (controlsRef.current.style.visibility == "visible") {
             count += 1;
         }
-        // if (bookmarks.map(item => item.display).includes(format(playerRef.current.getCurrentTime()))) {
-        //     quizContainerRef.current.style.visibility = "visible";
-        //     setState({ ...state, playing: false });
+
+        // for (let i in bookmarks) {
+        //     if (bookmarks[i].type==="Quiz Marker" && bookmarks[i].display === format(playerRef.current.getCurrentTime())) {
+        //         quizContainerRef.current.style.visibility = "visible";
+        //         setState({ ...state, playing: false });
+        //         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
+        //     }
         // }
-        for (let i in bookmarks) {
-            if (bookmarks[i].type==="Quiz Marker" && bookmarks[i].display === format(playerRef.current.getCurrentTime())) {
-                quizContainerRef.current.style.visibility = "visible";
-                setState({ ...state, playing: false });
-                playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
-            }
-        }
 
     }
 
@@ -252,21 +251,44 @@ const VideoPlayer2 = () => {
     }
 
     const handleAddSectionMarker = () => {
-        
-        if(markerEntry.type==="Section Marker"){
+
+        if (markerEntry.type === "Section Marker") {
             addBookmark(markerEntry.title, markerEntry.type);
             setMarkerEntry({ type: "Section Marker", title: "" });
             setShowAddMaker(false);
             console.log(markerEntry);
         }
-        else{
+        else {
             addBookmark(markerEntry.title, markerEntry.type);
             setMarkerEntry({ type: "Quiz Marker", title: "" });
             setShowAddMaker(false);
             console.log(markerEntry);
         }
     }
-    
+
+    const handleUpdateSectionMarker = () => {
+        let temp = [...bookmarks];
+        for( let i in bookmarks){
+            if (temp[i].display===editMarkerFields.display){
+                temp[i].title = editMarkerFields.title;
+            }
+        }
+        setBookmarks(temp);
+        setShowEditMarker(false);
+        setLocalStorage("bookmarks",temp);
+    }
+
+    const handleBookmarkClicked = (bookmark) => {
+        if(showEditMarker)return;
+        playerRef.current.seekTo(bookmark.time);
+        setState({ ...state, playing: false });
+        // setShowBookmarks(false);
+        setShowAddMaker(false);
+        setShowEditMarker(true);
+        setEditMarkerFields({ editMarkerFields, ['title']: bookmark.title, ["display"]:bookmark.display });
+        
+    }
+
 
     const open = Boolean(anchorEl);
     const id = open ? "playbackrate-popover" : undefined;
@@ -276,6 +298,11 @@ const VideoPlayer2 = () => {
     const ellapsedTime = timeDisplayFormat === 'normal' ? format(currentTime) : `-${format(duration - currentTime)}`;
     const totalDuration = format(duration);
 
+    useEffect(() => {
+        console.log(getLocalStorage("bookmarks"));
+        if (!getLocalStorage("bookmarks") !== null)
+            setBookmarks([...getLocalStorage("bookmarks")]);
+    }, [])
 
 
     return (<>
@@ -292,11 +319,11 @@ const VideoPlayer2 = () => {
                 value=""
 
             >
-                {bookmarks.map((option) => (
-                    <MenuItem key={option.time} value={option.value}
-                        onClick={() => { playerRef.current.seekTo(option.time); }}
+                {bookmarks?.map((option) => (
+                    <MenuItem key={option.time} value={option.value} title={option.title}
+                        onClick={() => { handleBookmarkClicked(option); }}
                     >
-                        {option.title} {option.display}
+                        {option.title.slice(0,30)} {option.title.length>30?"...":""} {option.display}
                     </MenuItem>
                 ))}
             </TextField>
@@ -484,8 +511,17 @@ const VideoPlayer2 = () => {
             </div> */}
             <div className={classes.markerContainer}>
                 <div className={classes.addBookmark}>
-                    <Button variant="text" onClick={() => { setState({ ...state, playing: false }); setShowAddMaker(!showAddMaker) }}>Add Marker/Quiz</Button>
-                    <Button variant="text" onClick={() => { setShowBookmarks(!showBookmarks) }}>{showBookmarks ? "Hide Bookmarks" : "Show Bookmarks"}</Button>
+                    {!showEditMarker?
+                        <>
+                            <Button variant="text" onClick={() => { setState({ ...state, playing: false }); setShowAddMaker(!showAddMaker) }}>Add Marker/Quiz</Button>
+                            <Button variant="text" onClick={() => { setShowBookmarks(!showBookmarks) }}>{showBookmarks ? "Hide Bookmarks" : "Show Bookmarks"}</Button>
+                        </>
+                        :
+                        <>
+                            <Button color="error" onClick={() => {setBookmarks(bookmarks.filter(item=>item.display!=editMarkerFields.display)); setShowEditMarker(false)}}>{"delete"}</Button>
+                            <Button variant="text" onClick={() => {setShowEditMarker(false)}}>{"cancel"}</Button>
+                        </>
+                    }
                 </div>
 
                 {showAddMaker &&
@@ -500,7 +536,7 @@ const VideoPlayer2 = () => {
                                 value={markerEntry.type}
                                 name={"type"}
                                 onChange={handleChangeMarkerEntry}
-                                style={{padding:"0 1vw"}}
+                                style={{ padding: "0 1vw" }}
                             >
                                 {["Section Marker", "Quiz Marker"].map((option) => (
                                     <MenuItem key={option} value={option}>
@@ -511,49 +547,73 @@ const VideoPlayer2 = () => {
 
                         </div>
                         <div className={classes.markerTitle}>
-                        <TextField
-                            InputProps={{ disableUnderline: true }}
-                            className={classes.textField}
-                            placeholder={'Enter Title'}
-                            variant="standard"
-                            style={{width:"100%"}}
-                            value={markerEntry.title}
-                            name={"title"}
-                            onChange={handleChangeMarkerEntry}
-                        />
+                            <TextField
+                                InputProps={{ disableUnderline: true }}
+                                className={classes.textField}
+                                placeholder={'Enter Title'}
+                                variant="standard"
+                                style={{ width: "100%" }}
+                                value={markerEntry.title}
+                                name={"title"}
+                                onChange={handleChangeMarkerEntry}
+                            />
                         </div>
                         <div className={classes.addCancel}>
                             <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleAddSectionMarker}>Add</Button>
                             <Button size="small" color="error" variant="text" className={classes.addCancel}
-                                onClick={()=>{setMarkerEntry({ type: "Section Marker", title: "" });setShowAddMaker(false);}}
+                                onClick={() => { setMarkerEntry({ type: "Section Marker", title: "" }); setShowAddMaker(false); }}
                             >
                                 Cancel
                             </Button>
                         </div>
                     </div>
                 }
+                {
+                    showEditMarker &&
+                    <div style={{ alignItems: 'center', display: 'flex', padding: '0 8px' }}>
+                        <div className={classes.markerSelect}>
+                            <p>Marker Title</p>
+                        </div>
+                        <div className={classes.markerTitle}>
+                            <TextField
+                                InputProps={{ disableUnderline: true }}
+                                className={classes.textField}
+                                placeholder={'Enter Title'}
+                                variant="standard"
+                                style={{ width: "100%" }}
+                                value={editMarkerFields.title}
+                                name={"title"}
+                                onChange={(e) => { setEditMarkerFields({ ...editMarkerFields, ["title"]: e.target.value }) }}
+                            />
+                        </div>
+                        <div className={classes.addCancel}>
+                        <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleUpdateSectionMarker}>{"update"}</Button>
+                        </div>
+
+                    </div>
+
+                }
             </div>
 
 
-            {bookmarks.length !== 0 && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
+            {bookmarks?.length !== 0 && !showEditMarker && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
                 <div className={classes.containerInner}>
-                    {bookmarks.map((bookmark, index) => (
-                        <div className={classes.tileStyle} key={index}>
+                    {bookmarks?.map((bookmark, index) => (
+                        <div className={classes.tileStyle} key={index} title={bookmark.title}>
                             <Paper
-
                                 onClick={() => {
-                                    playerRef.current.seekTo(bookmark.time);
+                                    handleBookmarkClicked(bookmark);
                                 }}
                                 elevation={1}
                             >
                                 <img crossOrigin="anonymous" src={bookmark.image} width='100%' />
                             </Paper>
                             <p style={{ color: 'blue' }}>
-                                {bookmark.type==="Section Marker"?"section":"quiz"} : {bookmark.display} 
+                                {bookmark.type === "Section Marker" ? "section" : "quiz"} : {bookmark.display}
                             </p>
-                            <p style={{ textAlign: 'left' }}>
+                            <p style={{ textAlign: 'left' }} >
                                 {/* <span style={{color:'blue'}}>{bookmark.display}</span>  */}
-                                {bookmark.title.slice(0,25)} {bookmark.title.length>20?"...":""}
+                                {bookmark.title.slice(0, 30)} {bookmark.title.length > 30 ? "..." : ""}
                             </p>
                         </div>
                     ))}
@@ -565,4 +625,4 @@ const VideoPlayer2 = () => {
     </>)
 }
 
-export { VideoPlayer2 }
+export { InstructorVideoPlayer }

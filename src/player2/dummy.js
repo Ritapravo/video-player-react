@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 const dummyCheckPoints = [
     {
         "time": 37.713229,
@@ -109,4 +110,26 @@ const timestamps = [
     { id: '9', title: 'Point 16', timestamp: '0:30', },
 ]
 
-export {dummyCheckPoints, timestamps};
+const useLocalStorage = (name) => {
+    const [value, setValue] = useState('')
+
+    useEffect(() => {
+        setValue(JSON.parse(localStorage.getItem(name)));
+    }, [])
+
+    return value
+}
+
+const getLocalStorage = (name) => {
+    return JSON.parse(localStorage.getItem(name));
+}
+
+const setLocalStorage = (name, value) => {
+    localStorage.setItem(name, JSON.stringify(value));
+}
+
+const delLocalStorage = (name) => {
+    localStorage.removeItem(name);
+}
+
+export { dummyCheckPoints, timestamps, useLocalStorage, getLocalStorage, delLocalStorage, setLocalStorage };
