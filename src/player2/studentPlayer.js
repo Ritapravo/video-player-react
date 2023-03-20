@@ -440,7 +440,7 @@ const StudentVideoPlayer = () => {
                             <Paper
 
                                 onClick={() => {
-                                    playerRef.current.seekTo(bookmark.time);
+                                    playerRef.current.seekTo(bookmark.time-0.5);
                                 }}
                                 elevation={1}
                             >
