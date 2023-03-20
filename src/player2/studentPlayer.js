@@ -19,7 +19,7 @@ import { dummyCheckPoints } from './dummy';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import classes from './player.module.css'
-import { getLocalStorage, setLocalStorage } from './dummy';
+import { getLocalStorage, setLocalStorage, useLocalStorage } from './dummy';
 
 const format = (seconds) => {
     if (isNaN(seconds)) {
@@ -202,12 +202,12 @@ const StudentVideoPlayer = () => {
     }
 
    
-
+    const tempBookmarks = useLocalStorage("bookmarks");
     useEffect(() => {
-        console.log(getLocalStorage("bookmarks"));
-        if (!getLocalStorage("bookmarks") !== null)
-            setBookmarks([...getLocalStorage("bookmarks")]);
-    }, [])
+        console.log(tempBookmarks);
+        if (tempBookmarks)
+            setBookmarks([...tempBookmarks]);
+    }, [tempBookmarks])
     
 
     const open = Boolean(anchorEl);

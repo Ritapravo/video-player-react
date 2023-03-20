@@ -298,11 +298,12 @@ const InstructorVideoPlayer = () => {
     const ellapsedTime = timeDisplayFormat === 'normal' ? format(currentTime) : `-${format(duration - currentTime)}`;
     const totalDuration = format(duration);
 
+    const tempBookmarks = useLocalStorage("bookmarks");
     useEffect(() => {
-        console.log(getLocalStorage("bookmarks"));
-        if (!getLocalStorage("bookmarks") !== null)
-            setBookmarks([...getLocalStorage("bookmarks")]);
-    }, [])
+        console.log(tempBookmarks);
+        if (tempBookmarks)
+            setBookmarks([...tempBookmarks]);
+    }, [tempBookmarks])
 
 
     return (<>
