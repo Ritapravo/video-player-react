@@ -20,6 +20,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import classes from './player.module.css'
 import { useLocalStorage, setLocalStorage } from './dummy';
+import EditQuiz from './editQuiz';
 
 const format = (seconds) => {
     if (isNaN(seconds)) {
@@ -112,6 +113,7 @@ const InstructorVideoPlayer = () => {
             value: (playerRef.current.getCurrentTime() * 100) / playerRef.current.getDuration(),
             title: title,
             type: type,
+            quiz: {},
         });
         bookmarksCopy.sort((a, b) => {
             if (a['time'] < b['time']) {
@@ -268,25 +270,25 @@ const InstructorVideoPlayer = () => {
 
     const handleUpdateSectionMarker = () => {
         let temp = [...bookmarks];
-        for( let i in bookmarks){
-            if (temp[i].display===editMarkerFields.display){
+        for (let i in bookmarks) {
+            if (temp[i].display === editMarkerFields.display) {
                 temp[i].title = editMarkerFields.title;
             }
         }
         setBookmarks(temp);
         setShowEditMarker(false);
-        setLocalStorage("bookmarks",temp);
+        setLocalStorage("bookmarks", temp);
     }
 
     const handleBookmarkClicked = (bookmark) => {
-        if(showEditMarker)return;
+        if (showEditMarker) return;
         playerRef.current.seekTo(bookmark.time);
         setState({ ...state, playing: false });
         // setShowBookmarks(false);
         setShowAddMaker(false);
         setShowEditMarker(true);
-        setEditMarkerFields({ editMarkerFields, ['title']: bookmark.title, ["display"]:bookmark.display });
-        
+        setEditMarkerFields({ ...bookmark });
+
     }
 
 
@@ -324,7 +326,7 @@ const InstructorVideoPlayer = () => {
                     <MenuItem key={option.time} value={option.value} title={option.title}
                         onClick={() => { handleBookmarkClicked(option); }}
                     >
-                        {option.title.slice(0,30)} {option.title.length>30?"...":""} {option.display}
+                        {option.title.slice(0, 30)} {option.title.length > 30 ? "..." : ""} {option.display}
                     </MenuItem>
                 ))}
             </TextField>
@@ -512,15 +514,15 @@ const InstructorVideoPlayer = () => {
             </div> */}
             <div className={classes.markerContainer}>
                 <div className={classes.addBookmark}>
-                    {!showEditMarker?
+                    {!showEditMarker ?
                         <>
                             <Button variant="text" onClick={() => { setState({ ...state, playing: false }); setShowAddMaker(!showAddMaker) }}>Add Marker/Quiz</Button>
                             <Button variant="text" onClick={() => { setShowBookmarks(!showBookmarks) }}>{showBookmarks ? "Hide Bookmarks" : "Show Bookmarks"}</Button>
                         </>
                         :
                         <>
-                            <Button color="error" onClick={() => {setBookmarks(bookmarks.filter(item=>item.display!=editMarkerFields.display)); setShowEditMarker(false)}}>{"delete"}</Button>
-                            <Button variant="text" onClick={() => {setShowEditMarker(false)}}>{"cancel"}</Button>
+                            <Button color="error" onClick={() => { setBookmarks(bookmarks.filter(item => item.display != editMarkerFields.display)); setShowEditMarker(false) }}>{"delete"}</Button>
+                            <Button variant="text" onClick={() => { setShowEditMarker(false) }}>{"cancel"}</Button>
                         </>
                     }
                 </div>
@@ -571,33 +573,34 @@ const InstructorVideoPlayer = () => {
                 }
                 {
                     showEditMarker &&
-                    <div style={{ alignItems: 'center', display: 'flex', padding: '0 8px' }}>
-                        <div className={classes.markerSelect}>
-                            <p>Marker Title</p>
+                    <div>
+                        <div style={{ alignItems: 'center', display: 'flex', padding: '0 8px' }}>
+                            <div className={classes.markerSelect}>
+                                <p>Marker Title</p>
+                            </div>
+                            <div className={classes.markerTitle}>
+                                <TextField
+                                    InputProps={{ disableUnderline: true }}
+                                    className={classes.textField}
+                                    placeholder={'Enter Title'}
+                                    variant="standard"
+                                    style={{ width: "100%" }}
+                                    value={editMarkerFields.title}
+                                    name={"title"}
+                                    onChange={(e) => { setEditMarkerFields({ ...editMarkerFields, ["title"]: e.target.value }) }}
+                                />
+                            </div>
+                            <div className={classes.addCancel}>
+                                <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleUpdateSectionMarker}>{"update"}</Button>
+                            </div>
                         </div>
-                        <div className={classes.markerTitle}>
-                            <TextField
-                                InputProps={{ disableUnderline: true }}
-                                className={classes.textField}
-                                placeholder={'Enter Title'}
-                                variant="standard"
-                                style={{ width: "100%" }}
-                                value={editMarkerFields.title}
-                                name={"title"}
-                                onChange={(e) => { setEditMarkerFields({ ...editMarkerFields, ["title"]: e.target.value }) }}
-                            />
-                        </div>
-                        <div className={classes.addCancel}>
-                        <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleUpdateSectionMarker}>{"update"}</Button>
-                        </div>
-
+                        <EditQuiz bookmark={editMarkerFields}/>
                     </div>
-
                 }
             </div>
 
 
-            {bookmarks?.length !== 0 && !showEditMarker && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
+            {bookmarks?.length !== 0 && !showEditMarker && !showAddMaker && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
                 <div className={classes.containerInner}>
                     {bookmarks?.map((bookmark, index) => (
                         <div className={classes.tileStyle} key={index} title={bookmark.title}>

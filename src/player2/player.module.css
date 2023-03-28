@@ -60,7 +60,8 @@
 }
 
 .videoTitle h2 {
-    margin: 0vw;
+    margin: 0vw!important;
+    font-size: 1vw!important;
 }
 
 .controlWrapper {
@@ -212,8 +213,11 @@
     }
 
     .videoTitle h2 {
-        font-size: 5vw;
-        margin: 1vw;
+        font-size: 5vw!important;
+        margin: 1vw!important;
+    }
+    .markerContainer button {
+        font-size: 2.5vw!important;
     }
 
     .tileStyle {
