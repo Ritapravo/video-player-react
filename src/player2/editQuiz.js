@@ -1,5 +1,5 @@
 import { React, useRef, useState, useMemo } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Button, Col, Row } from 'react-bootstrap';
 import JoditEditor from 'jodit-react';
 import Form from 'react-bootstrap/Form';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -27,17 +27,26 @@ const EditQuiz = (props) => {
 
     }
 
+    const addOption = () => {
+        let temp = {...content}
+        if(!('options' in temp)){
+            temp['options'] = [{rightAns: false, info: ""}]
+            setContent(temp);
+            console.log(temp);
+        }
+    }
+
 
     return useMemo(() => (
         <div style={{ padding: '10px 8px' }}>
             <Row>
-                <Col xs={xs.left} md={md.left}>
+                <Col xs={xs.left} md={md.left} style={{textAlign:'right'}}>
                     Description:
                 </Col>
                 <Col xs={xs.right} md={md.right}>
                     <JoditEditor
                         ref={editor}
-                        value={content.description || ""}
+                        value={content.description}
                         config={config}
                         tabIndex={1} // tabIndex of textarea
                         onChange={(e) => { setContent({ ...content, ['description']: e });  }}
@@ -45,13 +54,13 @@ const EditQuiz = (props) => {
                 </Col>
 
             </Row>
-            <Row style={{ margin: '13px 0' }}>
+            <Row style={{ margin: '13px 0px'}}>
 
-                <Form>
-                    <Col xs={5} md={2} style={{ display: 'inline-block' }}>
+                <Form style={{padding:'0'}}>
+                    <Col xs={5} md={2} style={{ display: 'inline-block', textAlign:'right', padding:'0 12px' }}>
                         Marks
                     </Col>
-                    <Col xs={7} md={4} style={{ padding: '0 10px', marginTop:"13px", display: 'inline-block' }}>
+                    <Col xs={7} md={4} style={{ padding: '10px', marginTop:"13px", display: 'inline-block' }}>
                         <Form.Group controlId="formBasicEmail">
                             <Form.Control
                                 type="number"
@@ -61,7 +70,7 @@ const EditQuiz = (props) => {
                             />
                         </Form.Group>
                     </Col>
-                    <Col xs={5} md={2} style={{ display: 'inline-block' }}>
+                    <Col xs={5} md={2} style={{ display: 'inline-block', textAlign:'right' }}>
                         Attempts
                     </Col>
                     <Col xs={7} md={4} style={{ padding: '0 10px', marginTop:"13px", display: 'inline-block' }}>
@@ -75,7 +84,7 @@ const EditQuiz = (props) => {
                         </Form.Group>
                     </Col>
 
-                    <Col xs={5} md={2} style={{ display: 'inline-block' }}>
+                    <Col xs={5} md={2} style={{ display: 'inline-block', textAlign:'right' }}>
                         Type
                     </Col>
                     <Col xs={7} md={4} style={{ marginTop:"13px", padding: '0 10px', display: 'inline-block' }}>
@@ -92,6 +101,19 @@ const EditQuiz = (props) => {
                     </Col>
 
                 </Form>
+
+            </Row>
+            <Row>
+                <Col xs={xs.left} md={md.left} style={{textAlign:'right'}}>
+                    Options:
+                </Col>
+                <Col xs={xs.right} md={md.right}>
+                    <Button variant='outline-primary'
+                        onClick={()=>{addOption()}}
+                    >
+                        Add option 
+                    </Button>
+                </Col>
 
             </Row>
         </div>
