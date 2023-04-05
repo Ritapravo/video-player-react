@@ -106,7 +106,8 @@ const InstructorVideoPlayer = () => {
         canvas.width = 0;
         canvas.height = 0;
         const bookmarksCopy = [...bookmarks];
-        bookmarksCopy.push({
+
+        let tempItem = {
             time: playerRef.current.getCurrentTime(),
             display: format(playerRef.current.getCurrentTime()),
             image: imageUrl,
@@ -114,7 +115,8 @@ const InstructorVideoPlayer = () => {
             title: title,
             type: type,
             quiz: {},
-        });
+        }
+        bookmarksCopy.push(tempItem);
         bookmarksCopy.sort((a, b) => {
             if (a['time'] < b['time']) {
                 return -1;
@@ -129,6 +131,9 @@ const InstructorVideoPlayer = () => {
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
         setLocalStorage("bookmarks", bookmarksCopy);
         setBookmarks(bookmarksCopy);
+        if (type==="Quiz Marker"){
+            handleBookmarkClicked(tempItem, bookmarksCopy.indexOf(tempItem));
+        }
 
     }
 
@@ -292,6 +297,13 @@ const InstructorVideoPlayer = () => {
         console.log(index);
         setEditMarkerFields({ ...bookmark, ['bookmarkIndex']:index });
 
+    }
+    const handleDeleteBookmark =()=> {
+        let temp={...bookmarks}
+        temp = bookmarks.filter(item => item.display != editMarkerFields.display); 
+        setBookmarks(temp)
+        setShowEditMarker(false);
+        setLocalStorage("bookmarks", temp)
     }
 
 
@@ -524,7 +536,7 @@ const InstructorVideoPlayer = () => {
                         </>
                         :
                         <>
-                            <Button color="error" onClick={() => { setBookmarks(bookmarks.filter(item => item.display != editMarkerFields.display)); setShowEditMarker(false) }}>{"delete"}</Button>
+                            <Button color="error" onClick={() => { handleDeleteBookmark() }}>{"delete"}</Button>
                             <Button variant="text" onClick={() => { setShowEditMarker(false) }}>{"cancel"}</Button>
                         </>
                     }
