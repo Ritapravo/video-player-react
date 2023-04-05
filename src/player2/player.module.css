@@ -203,6 +203,11 @@
     height: 10px;
 } */
 
+.fieldLabel{
+    text-align: right;
+}
+
+
 @media screen and (max-width: 500px) {
     .container {
         padding: 3vw 3vw;
@@ -252,6 +257,10 @@
 
     .lowerGrid {
         padding: 5px !important;
+    }
+
+    .fieldLabel{
+        text-align: left;
     }
 
 }

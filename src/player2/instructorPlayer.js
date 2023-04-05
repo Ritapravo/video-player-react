@@ -124,6 +124,7 @@ const InstructorVideoPlayer = () => {
             }
             return 0;
         });
+        
 
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
         setLocalStorage("bookmarks", bookmarksCopy);
@@ -280,14 +281,16 @@ const InstructorVideoPlayer = () => {
         setLocalStorage("bookmarks", temp);
     }
 
-    const handleBookmarkClicked = (bookmark) => {
+    const handleBookmarkClicked = (bookmark, index) => {
         if (showEditMarker) return;
         playerRef.current.seekTo(bookmark.time);
         setState({ ...state, playing: false });
         // setShowBookmarks(false);
         setShowAddMaker(false);
+        
         setShowEditMarker(true);
-        setEditMarkerFields({ ...bookmark });
+        console.log(index);
+        setEditMarkerFields({ ...bookmark, ['bookmarkIndex']:index });
 
     }
 
@@ -322,9 +325,9 @@ const InstructorVideoPlayer = () => {
                 value=""
 
             >
-                {bookmarks?.map((option) => (
+                {bookmarks?.map((option, index) => (
                     <MenuItem key={option.time} value={option.value} title={option.title}
-                        onClick={() => { handleBookmarkClicked(option); }}
+                        onClick={() => { handleBookmarkClicked(option, index); }}
                     >
                         {option.title.slice(0, 30)} {option.title.length > 30 ? "..." : ""} {option.display}
                     </MenuItem>
@@ -594,7 +597,14 @@ const InstructorVideoPlayer = () => {
                                 <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleUpdateSectionMarker}>{"update"}</Button>
                             </div>
                         </div>
-                        <EditQuiz bookmark={editMarkerFields}/>
+                        {editMarkerFields.type==='Quiz Marker' && 
+                            <EditQuiz 
+                                editMarkerFields={editMarkerFields} 
+                                bookmarks={bookmarks} 
+                                setBookmarks={setBookmarks}
+                                setShowEditMarker={setShowEditMarker}
+                            />
+                        }
                     </div>
                 }
             </div>
@@ -606,7 +616,7 @@ const InstructorVideoPlayer = () => {
                         <div className={classes.tileStyle} key={index} title={bookmark.title}>
                             <Paper
                                 onClick={() => {
-                                    handleBookmarkClicked(bookmark);
+                                    handleBookmarkClicked(bookmark, index);
                                 }}
                                 elevation={1}
                             >
