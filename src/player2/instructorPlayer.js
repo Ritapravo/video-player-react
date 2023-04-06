@@ -77,6 +77,7 @@ const InstructorVideoPlayer = () => {
     const [markerEntry, setMarkerEntry] = useState({ type: "Section Marker", title: "" });
     const [showEditMarker, setShowEditMarker] = useState(false);
     const [editMarkerFields, setEditMarkerFields] = useState({ title: "" });
+    const [showQuiz, setShowQuiz] = useState(false);
 
     const handleChangeMarkerEntry = (e) => {
         setMarkerEntry({ ...markerEntry, [e.target.name]: e.target.value });
@@ -126,12 +127,12 @@ const InstructorVideoPlayer = () => {
             }
             return 0;
         });
-        
+
 
         playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
         setLocalStorage("bookmarks", bookmarksCopy);
         setBookmarks(bookmarksCopy);
-        if (type==="Quiz Marker"){
+        if (type === "Quiz Marker") {
             handleBookmarkClicked(tempItem, bookmarksCopy.indexOf(tempItem));
         }
 
@@ -292,15 +293,15 @@ const InstructorVideoPlayer = () => {
         setState({ ...state, playing: false });
         // setShowBookmarks(false);
         setShowAddMaker(false);
-        
+
         setShowEditMarker(true);
         console.log(index);
-        setEditMarkerFields({ ...bookmark, ['bookmarkIndex']:index });
+        setEditMarkerFields({ ...bookmark, ['bookmarkIndex']: index });
 
     }
-    const handleDeleteBookmark =()=> {
-        let temp={...bookmarks}
-        temp = bookmarks.filter(item => item.display != editMarkerFields.display); 
+    const handleDeleteBookmark = () => {
+        let temp = { ...bookmarks }
+        temp = bookmarks.filter(item => item.display != editMarkerFields.display);
         setBookmarks(temp)
         setShowEditMarker(false);
         setLocalStorage("bookmarks", temp)
@@ -515,13 +516,20 @@ const InstructorVideoPlayer = () => {
 
                     </Grid>
                 </div>
-                <div className={classes.quizWrapper} ref={quizContainerRef}>
+                {showQuiz &&<div className={classes.quizWrapper} ref={quizContainerRef}>
                     <div className={classes.quiz}>
 
                     </div>
-                    <Button variant={'text'} className={classes.skipButton} onClick={() => { setState({ ...state, playing: true }); quizContainerRef.current.style.visibility = "hidden" }}>skip</Button>
-
-                </div>
+                    <Button variant={'text'}
+                        className={classes.skipButton}
+                        onClick={() => {
+                            setState({ ...state, playing: true });
+                            quizContainerRef.current.style.visibility = "hidden";
+                            setShowQuiz(false);
+                        }}>
+                        skip
+                    </Button>
+                </div>}
             </div>
 
             {/* <div className={classes.addMarker}>
@@ -609,10 +617,10 @@ const InstructorVideoPlayer = () => {
                                 <Button size="small" color="success" variant="outlined" className={classes.addCancel} onClick={handleUpdateSectionMarker}>{"update"}</Button>
                             </div>
                         </div>
-                        {editMarkerFields.type==='Quiz Marker' && 
-                            <EditQuiz 
-                                editMarkerFields={editMarkerFields} 
-                                bookmarks={bookmarks} 
+                        {editMarkerFields.type === 'Quiz Marker' &&
+                            <EditQuiz
+                                editMarkerFields={editMarkerFields}
+                                bookmarks={bookmarks}
                                 setBookmarks={setBookmarks}
                                 setShowEditMarker={setShowEditMarker}
                             />

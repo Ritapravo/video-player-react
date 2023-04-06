@@ -20,6 +20,7 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import classes from './player.module.css'
 import { getLocalStorage, setLocalStorage, useLocalStorage } from './dummy';
+import QuizPlayer from './quizPlayer';
 
 const format = (seconds) => {
     if (isNaN(seconds)) {
@@ -74,10 +75,9 @@ const StudentVideoPlayer = () => {
     const [showBookmarks, setShowBookmarks] = useState(true);
 
     
-
-   
+    
     const { playing, muted, volume, playbackRate, played, timeDisplayFormat } = state;
-
+    
     const playerRef = useRef(null);
     const playerContainerRef = useRef(null);
     const canvasRef = useRef(null);
@@ -85,6 +85,9 @@ const StudentVideoPlayer = () => {
     const sliderRef = useRef(null);
     const quizContainerRef = useRef(null);
     const [enableQuiz, setEnableQuiz] = useState(true);
+    const [showQuiz, setShowQuiz] = useState(false);
+    const [quiz, setQuiz] = useState({});
+
 
 
     const handlePlayPause = () => {
@@ -163,7 +166,8 @@ const StudentVideoPlayer = () => {
         // }
         for (let i in bookmarks) {
             if (bookmarks[i].type==="Quiz Marker" && enableQuiz && bookmarks[i].display === format(playerRef.current.getCurrentTime())) {
-                quizContainerRef.current.style.visibility = "visible";
+                // quizContainerRef.current.style.visibility = "visible";
+                setShowQuiz(true);
                 setState({ ...state, playing: false });
                 playerRef.current.seekTo(playerRef.current.getCurrentTime() + 0.8);
             }
@@ -199,6 +203,12 @@ const StudentVideoPlayer = () => {
     const handleMouseMove = () => {
         controlsRef.current.style.visibility = 'visible';
         count = 0;
+    }
+
+    const handleBookmarkClicked = (bookmark, index)=> {
+        playerRef.current.seekTo(bookmark.time-0.5);
+        setState({ ...state, playing: false });
+        setQuiz({...bookmark.quiz, ['title']:bookmark.title});
     }
 
    
@@ -412,13 +422,13 @@ const StudentVideoPlayer = () => {
 
                     </Grid>
                 </div>
-                <div className={classes.quizWrapper} ref={quizContainerRef}>
+                {showQuiz===true && <div className={classes.quizWrapper} ref={quizContainerRef}>
                     <div className={classes.quiz}>
-
+                        <QuizPlayer quiz={quiz}/>
                     </div>
-                    <Button variant={'text'} className={classes.skipButton} onClick={() => { setState({ ...state, playing: true }); quizContainerRef.current.style.visibility = "hidden" }}>skip</Button>
+                    <Button variant={'text'} className={classes.skipButton} onClick={() => { setState({ ...state, playing: true }); setShowQuiz(false);}}>skip</Button>
 
-                </div>
+                </div>}
             </div>
 
             {/* <div className={classes.addMarker}>
@@ -440,7 +450,7 @@ const StudentVideoPlayer = () => {
                             <Paper
 
                                 onClick={() => {
-                                    playerRef.current.seekTo(bookmark.time-0.5);
+                                    handleBookmarkClicked(bookmark, index);
                                 }}
                                 elevation={1}
                             >

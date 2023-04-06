@@ -19,7 +19,7 @@
     cursor: pointer;
     text-align: center;
     border-radius: 10px;
-    vertical-align:top;
+    vertical-align: top;
 }
 
 .tileStyle p {
@@ -44,10 +44,43 @@
     height: auto;
 }
 
+.containerOuter::-webkit-scrollbar {
+    width: 10px;
+    height: 7px;
+    background-color: #f5f5f5;
+}
+
+.containerOuter::-webkit-scrollbar-thumb {
+    background-color: #c8c1c1;
+    border-radius: 5px;
+    height: 8px;
+}
+
+.containerOuter::-webkit-scrollbar-thumb:hover {
+    background-color: #9fcee8;
+    height: 8px;
+}
+
+.quiz::-webkit-scrollbar {
+    width: 6px;
+    background-color: #f5f5f5;
+}
+
+.quiz::-webkit-scrollbar-thumb {
+    background-color: #c8c1c1;
+    border-radius: 5px;
+}
+
+.quiz::-webkit-scrollbar-thumb:hover {
+    background-color: #9fcee8;
+}
+
+
+
 .containerInner {
     /* min-width: 500%;  */
     /* max-height: 15vw; */
-    
+
     /* display: flex; */
     white-space: nowrap;
 }
@@ -60,8 +93,8 @@
 }
 
 .videoTitle h2 {
-    margin: 0vw!important;
-    font-size: 1vw!important;
+    margin: 0vw !important;
+    font-size: 1vw !important;
 }
 
 .controlWrapper {
@@ -89,11 +122,22 @@
     flex-direction: column;
     justify-content: space-between;
     z-index: 2;
-    visibility: hidden;
+    /* visibility: hidden; */
     margin: 1%;
 }
 
-.markerContainer{
+.quiz{
+    padding: 25px 40px;
+    overflow-y: scroll;
+}
+.quiz h5{
+    font-size: 1vw !important;
+}
+.quiz p{
+    font-size: 1vw ;
+}
+
+.markerContainer {
     /* display: flex;
     flex-direction: Column;
     justify-content: space-between; */
@@ -123,15 +167,17 @@
 .markerSelect {
     width: 20%;
     /* margin-left: 1vw; */
-    display:inline-block ;
+    display: inline-block;
 }
+
 .markerTitle {
     width: 50%;
-    margin-left: 1vw!important;
-    display:inline-block ;
+    margin-left: 1vw !important;
+    display: inline-block;
     margin: 0 10px;
 }
-.addCancel{
+
+.addCancel {
     display: inline-block;
 }
 
@@ -151,7 +197,7 @@
 .textField input {
     /* transform: translate(0%, 15%); */
     /* color: #707070; */
-    margin: 0 1vw!important;
+    margin: 0 1vw !important;
 
 }
 
@@ -203,21 +249,22 @@
     height: 10px;
 } */
 
-.fieldLabel{
+.fieldLabel {
     text-align: right;
 }
 
-.leftGrayDivQuiz{
+.leftGrayDivQuiz {
     background-color: #e9e8e8;
     border: 1px solid #cccccc;
     position: absolute;
     display: flex;
     top: 0;
-    height:100%;
+    height: 100%;
     border-radius: 0.375rem 0 0 0.375em;
     padding: 0 5px;
 }
-.RightGrayDivQuiz{
+
+.RightGrayDivQuiz {
     /* background-color: #e9e8e8; */
     padding: 4px;
     position: absolute;
@@ -226,13 +273,17 @@
     right: 2px;
     border-radius: 50%;
 }
-.RightGrayDivQuiz:hover{
-    cursor:pointer;
+
+.RightGrayDivQuiz:hover {
+    cursor: pointer;
     background-color: #e9e8e8;
     /* padding: 5px; */
-    
+
 }
 
+.smallp{
+    font-size: 12px!important;
+}
 
 @media screen and (max-width: 500px) {
     .container {
@@ -244,11 +295,12 @@
     }
 
     .videoTitle h2 {
-        font-size: 5vw!important;
-        margin: 1vw!important;
+        font-size: 5vw !important;
+        margin: 1vw !important;
     }
+
     .markerContainer button {
-        font-size: 2.5vw!important;
+        font-size: 2.5vw !important;
     }
 
     .tileStyle {
@@ -285,8 +337,21 @@
         padding: 5px !important;
     }
 
-    .fieldLabel{
+    .fieldLabel {
         text-align: left;
+    }
+
+    .quiz{
+        padding: 10px 15px;
+    }
+    .quiz h5{
+        font-size: 4vw !important;
+    }
+    .quiz p{
+        font-size: 4vw ;
+    }
+    .smallp{
+        font-size: 2.5vw;
     }
 
 }
