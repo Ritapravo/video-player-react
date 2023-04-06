@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import classes from './player.module.css';
 import Form from 'react-bootstrap/Form';
 import { FormControl } from 'react-bootstrap';
+import {Button} from 'react-bootstrap';
 
 const QuizPlayer = (props) => {
     const { quiz } = props;
@@ -43,6 +44,11 @@ const QuizPlayer = (props) => {
 
                 ))
             }
+            <div style={{textAlign:'left'}}>
+                <Button size={'sm'} variant='outline-success'>
+                    Submit
+                </Button>
+            </div>
         </div>
     )
 }
