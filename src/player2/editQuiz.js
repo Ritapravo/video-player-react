@@ -7,6 +7,8 @@ import classes from './player.module.css'
 import { InputGroup, FormControl, FormCheck } from 'react-bootstrap';
 import { setLocalStorage } from './dummy';
 
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 const xs = {
     left: 12,
     right: 12
@@ -56,6 +58,23 @@ const EditQuiz = (props) => {
         setBookmarks(tempBookmarks);
         setLocalStorage("bookmarks", tempBookmarks);
         setShowEditMarker(false);
+    }
+    const handleChangeOptionSelect = (e, item, index) => {
+        let tempItem = { ...item };
+        let tempContent = { ...content }
+        if(content.quizType==='Single Choice Question'){
+            for(let i in tempContent.options){
+                tempContent.options[i]['rightAns'] = false;
+            }
+        }
+        tempItem['rightAns'] = e.target.checked;
+        tempContent.options[index] = tempItem;
+        console.log(tempContent);
+        setContent(tempContent);
+    }
+
+    const handleDeleteOption = (item , index) => {
+        setContent({...content, ['options']:content.options.filter((it, ind)=>{ return ind!==index})});
     }
 
 
@@ -120,7 +139,14 @@ const EditQuiz = (props) => {
                     <Form.Group className="mb-3">
                         <Form.Select
                             value={content.quizType}
-                            onChange={(e) => { setContent({ ...content, ["quizType"]: e.target.value }); console.log(content); }}
+                            onChange={(e) => { 
+                                let tempContent = {...content};
+                                for(let i in tempContent?.options){
+                                    tempContent.options[i].rightAns = false;
+                                }
+                                setContent({...tempContent,["quizType"]: e.target.value});
+                                console.log(content);
+                            }}
                         >
                             <option value={"Multiple Choice Question"}>Multiple Choice Question</option>
                             <option value={"Single Choice Question"}>Single Choice Question</option>
@@ -141,14 +167,30 @@ const EditQuiz = (props) => {
                     {
                         content?.options?.map((item, index) => (
 
-                            <FormControl
-                                key={index}
-                                as="textarea" rows={3}
-                                placeholder="Description"
-                                style={{ height: '70px', marginBottom: '20px' }}
-                                value={item.desc}
-                                onChange={(e) => { modifyTextOption(e, item, index) }}
-                            />
+                            <div style={{position:'relative', marginBottom: '20px', height:'70px'}}>
+                                <div className={classes.leftGrayDivQuiz}>
+                                <Form.Check
+                                    inline
+                                    style={{margin:'auto'}}
+                                    name="group1"
+                                    type={content.quizType==='Single Choice Question'?'radio':'checkbox'}
+                                    checked={item.rightAns}
+                                    onChange={(e)=>{handleChangeOptionSelect(e, item, index)}}
+                                />
+                                </div>
+                                <FormControl
+                                    key={index}
+                                    as="textarea" rows={3}
+                                    placeholder="Description"
+                                    style={{ height: '100%', display:'inline-block', paddingLeft:'30px' }}
+                                    value={item.desc}
+                                    onChange={(e) => { modifyTextOption(e, item, index) }}
+                                />
+                                <div className={classes.RightGrayDivQuiz}>
+                                    <RiDeleteBin6Line onClick={()=>{handleDeleteOption(item, index)}}/>
+                                </div>
+                            </div>
+
 
                         ))
                     }
@@ -206,8 +248,8 @@ const EditQuiz = (props) => {
             </Row>
 
             <div style={{ textAlign: 'center' }}>
-                <Button variant='outline-primary' 
-                    style={{marginTop:'10px'}}
+                <Button variant='outline-primary'
+                    style={{ marginTop: '10px' }}
                     onClick={() => { handleSave() }}
                 >
                     Save
