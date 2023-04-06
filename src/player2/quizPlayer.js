@@ -18,22 +18,19 @@ const QuizPlayer = (props) => {
             {
                 content?.options?.map((item, index) => (
 
-                    <div style={{ position: 'relative', height: '40px' }}>
-                        
+                    <div style={{ position: 'relative', marginBottom:'10px' }}>
+                        <div style={{position:'absolute', display:'flex', height:'100%'}}>
                             <Form.Check
                                 inline
-                                style={{ margin: 'auto' }}
+                                style={{ marginTop: '3px'}}
                                 name="group1"
                                 type={content.quizType === 'Single Choice Question' ? 'radio' : 'checkbox'}
                                 // checked={item.rightAns}
                                 // onChange={(e) => { handleChangeOptionSelect(e, item, index) }}
                             />
-                     
+                        </div>
                         <p
-                            key={index}
-                            as="textarea" rows={3}
-                            placeholder="Description"
-                            style={{ height: '100%', display: 'inline-block', paddingLeft: '20px' }}
+                            style={{  display: 'inline-block', paddingLeft: '30px', whiteSpace: 'initial', margin:'0'}}
                             // value={item.desc}
                             // onChange={(e) => { modifyTextOption(e, item, index) }}
                         >
