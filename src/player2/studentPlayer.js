@@ -443,7 +443,7 @@ const StudentVideoPlayer = () => {
             </div>
 
 
-            {bookmarks.length !== 0 && showBookmarks && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
+            {bookmarks.length !== 0 && showBookmarks && !showQuiz && <div className={classes.containerOuter} style={{ minWidth: '100%', padding: '0% 0%' }}>
                 <div className={classes.containerInner}>
                     {bookmarks.map((bookmark, index) => (
                         <div className={classes.tileStyle} key={index} title={bookmark.title}>

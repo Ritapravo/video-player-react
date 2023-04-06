@@ -18,7 +18,7 @@ const QuizPlayer = (props) => {
             {
                 content?.options?.map((item, index) => (
 
-                    <div style={{ position: 'relative', marginBottom: '20px', height: '40px' }}>
+                    <div style={{ position: 'relative', height: '40px' }}>
                         
                             <Form.Check
                                 inline
@@ -29,16 +29,16 @@ const QuizPlayer = (props) => {
                                 // onChange={(e) => { handleChangeOptionSelect(e, item, index) }}
                             />
                      
-                        <div
+                        <p
                             key={index}
                             as="textarea" rows={3}
                             placeholder="Description"
-                            style={{ height: '100%', display: 'inline-block', paddingLeft: '30px' }}
+                            style={{ height: '100%', display: 'inline-block', paddingLeft: '20px' }}
                             // value={item.desc}
                             // onChange={(e) => { modifyTextOption(e, item, index) }}
                         >
                             {item.desc}
-                        </div>
+                        </p>
                     </div>
 
 
